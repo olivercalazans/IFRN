@@ -94,3 +94,7 @@ dicionario = dict()
 for i in candidatos: 
     d = [i['n'],i['nm'],i['cc'],i['vap'],i['pvap']]
     dicionario[d[0]] = {'nome': d[1],'partido': d[2],'votos': d[3],'porcentagem': d[4],}
+
+for i in dicionario:
+    print(i)
+    print(dicionario[i])
