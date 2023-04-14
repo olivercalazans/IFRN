@@ -26,11 +26,9 @@
     Da segunda linha em diante deverão constar os dados correspondentes de
     cada candidato
 '''
-#------------------------------------------------------------------------------------------------------------
-# solicitar ano, sigla do estado (ou BR, se nacional), o cargo, e o id da eleição (ex.: 544, 546).
-#------------------------------------------------------------------------------------------------------------
 
-import requests, sys
+
+import requests, sys, os
 
 
 # Obtendo o ano.
@@ -47,7 +45,7 @@ while True:
 
 # Obtendo a sigla do estado.
 SIGLA = ['ac','al','ap','am','ba','ce','df','es','go','ma','mt','ms','mg','pa',
-         'pb','pe','pi','pr','rj','rn','ro','rr','rs','sp','to','sc','se']
+         'pb','pe','pi','pr','rj','rn','ro','rr','rs','sp','to','sc','se','br']
 while True:
         sigla = input('\nDigite a sigla do estado ("br" se for nacional): ').lower()
         if not sigla in SIGLA:
@@ -56,7 +54,7 @@ while True:
              break
 
 
-# Obtendo cargo.
+# Obtendo o cargo.
 while True:
     try:
         print('1: Presidente.\n')
@@ -84,15 +82,15 @@ while True:
 
 
 url  = 'https://resultados.tse.jus.br/oficial/'
-url += f'ele{ano}/544/dados-simplificados/{sigla}/'
+url += f'ele{ano}/{id_eleicao}/dados-simplificados/{sigla}/'
 url += f'{sigla}-c{cargo}-e000544-r.json'
 
 dados_retorno = requests.get(url).json()
 
-cand = dados_retorno['cand'] # separando as informações importantes
+candidatos = dados_retorno['cand'] # separando as informações importantes
 
-
-for i in cand: # pegando apenas as informações pedidas (nome, partido e n° de votos)
-    dados = {i['nm'],i['cc'],i['vap']}
-    print(dados)
-
+# pegando apenas as informações pedidas (nome, partido, n° de votos e porcentagem)
+dicionario = dict()
+for i in candidatos: 
+    d = [i['n'],i['nm'],i['cc'],i['vap'],i['pvap']]
+    dicionario[d[0]] = {'nome': d[1],'partido': d[2],'votos': d[3],'porcentagem': d[4],}
