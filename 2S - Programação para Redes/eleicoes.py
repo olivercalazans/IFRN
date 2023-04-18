@@ -1,6 +1,6 @@
 '''
     Esse código pega os dados da eleição que for escolhida e faz um resumo dos candidatos.
-    É possível criar um arquivo com as informações que foram mostradas.
+    É possível criar um arquivo com as informações que foram mostradas
 '''
 
 import requests, sys, os
@@ -30,15 +30,28 @@ while True:
 
 
 # Obtendo o cargo.
+CARGOS = [1,3,5,11,6,7,8,13]
 while True:
     try:
-        cargo = input('\nDigite o cargo o código do cargo: ')
+        print('\n1..:Presidente')
+        print('3..:Presidente')
+        print('5..:Presidente')
+        print('11.:Presidente')
+        print('6..:Presidente')
+        print('7..:Presidente')
+        print('8..:Presidente')
+        print('13.:Presidente')
+        cargo = int(input('\nDigite o cargo o código do cargo: '))
     except ValueError:
-        print('DIGITE APENAS NÚMEROS.\n')
+        print('\nDIGITE APENAS NÚMEROS.\n')
     except:
         print(f'ERRO...:{sys.exc_info()[0]}')
     else:
-        break
+        if not cargo in CARGOS:
+            print('\nNÚMERO INVÁLIDO.')
+        else:
+            cargo = str(cargo).zfill(4)
+            break
 
 
 # Obtendo o ID da eleição.
@@ -58,8 +71,14 @@ url  = 'https://resultados.tse.jus.br/oficial/'
 url += f'ele{ano}/{id_eleicao}/dados-simplificados/{sigla}/'
 url += f'{sigla}-c{cargo}-e000544-r.json'
 
-
-dados_retorno = requests.get(url).json() # Buscando dados na rede.
+try:
+    dados_retorno = requests.get(url).json() # Buscando dados na rede.
+except:
+    print(140 * '-')
+    print(f'\nERRO...:{sys.exc_info()[0]}')
+    print('ALGUMA INFORMAÇÃO ESTÁ ERRADA OU NÃO FOI DISPONIBILIZADA PELO TSE.\n')
+    print(140 * '-')
+    sys.exit()
 
 candidatos = dados_retorno['cand'] # Separando as informações importantes.
 
@@ -70,6 +89,7 @@ for i in candidatos:
     dicionario[d[0]] = {'nome': d[1],'partido': d[2],'votos': d[3],'porcentagem': d[4],}
 
 # Apresentando os dados.
+print(140 * '-')
 for i in dicionario:
     print(f'{i}: {dicionario[i]}')
 print(140 * '-')
@@ -107,7 +127,8 @@ if criacao_arq == 'yes':
             dados_escrita.write(f'{i}: {dicionario[i]}\n')
         dados_escrita.close()
         print('Arquivo criado com sucesso!!!')
-        print('\nIsso é tudo.')
+        print('\n' + 140 * '-')
+        print('\nIsso é tudo.\n')
 else:
     print('\n' + 140 * '-')
-    print('\nIsso é tudo.')
+    print('\nIsso é tudo.\n')
