@@ -2,7 +2,7 @@ import socket, sys, ssl
 
 # URL PARA TESTES: https://www.nasa.gov/sites/default/files/thumbnails/image/nasa-logo-web-rgb.png
 
-url = input('Informe a URL: ')
+url = input('Informe a URL da imagem: ')
 
 # Manipulando a url/string para poder pegar os dados necessários.
 seacher0     = url.find(':')
