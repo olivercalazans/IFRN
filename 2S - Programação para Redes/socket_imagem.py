@@ -96,7 +96,7 @@ file_output.close()
 
 # Escrevendo arquivo com os dados do header.
 try:
-    with open(f'{txt_image}.txt','w',encoding='utf-8') as writing_header:
+    with open(f'{txt_image}','w',encoding='utf-8') as writing_header:
         writing_header.write(headers.decode('utf-8'))
 except:
     print('Erro ao salvar o arquivo.')
