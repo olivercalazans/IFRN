@@ -2,7 +2,7 @@ import socket, sys, ssl
 
 # URL PARA TESTES: https://www.nasa.gov/sites/default/files/thumbnails/image/nasa-logo-web-rgb.png
 
-url = input('Informe a URL da imagem: ')
+url = input('Informe a URL: ')
 
 # Manipulando a url/string para poder pegar os dados necessários.
 seacher0     = url.find(':')
@@ -29,23 +29,13 @@ print(f'URL da imagem.......: {url_image}')
 print(f'Arquivo da imagem...: {arq_image}')
 print(f'Texto da imagem.....: {txt_image}')
 
-#-------------------------------------------------------------------------------------
-# Verificando o protocolo. Disponivel: HTTP e HTTPS.
-if protocol != 'http' and protocol != 'https':
-    print('\n')
-    print(100 * '-')
-    print('Apenas os protocolos HTTP e HTTPS são aceitos.')
-    print(f'Protocolo da url informada: {protocol}')
-    print('Os demais protocolos serão adicionados em breve.')
-    print(100 * '-')
-    sys.exit()
-
-#-------------------------------------------------------------------------------------
 # Criando conexão
 try: 
     url_request = f'GET {url_image} HTTP/1.1\r\nHOST: {url_host}\r\n\r\n'
     sock_img = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    buffer_size = 1024
 
+    # Verificando o protocolo.
     if protocol == 'http':
         host_port   = 80
         sock_img.connect((url_host, host_port))
@@ -58,7 +48,11 @@ try:
         socket_rss = socket.create_connection((url_host, host_port))
         sock_img   = context.wrap_socket(socket_rss, server_hostname=url_host)
         sock_img.send(url_request.encode())
-    buffer_size = 1024
+    else:
+        print('Apenas as URLs com protocolos HTTP e HTTPS são aceitas.')
+        print(f'Protocolo da URL informada: {protocol}')
+        print('Os demais protocolos serão adicionados em breve.')
+        sys.exit()
 except:
     print('Erro ao criar a conexão')
     print(print(f'ERRO...:{sys.exc_info()[0]}'))
@@ -71,8 +65,6 @@ while True:
     data = sock_img.recv(buffer_size)
     if not data: break
     data_ret += data
-
-sock_img.close()
 
 # Obtendo o tamanho da imagem
 img_size = -1
@@ -90,7 +82,7 @@ headers   = data_ret[:position]
 image     = data_ret[position+4:]
 
 # Salvando a imagem
-file_output = open('image.png', 'wb')
+file_output = open(f'{arq_image}', 'wb')
 file_output.write(image)
 file_output.close()
 
