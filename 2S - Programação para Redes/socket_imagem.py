@@ -31,7 +31,7 @@ print(f'Texto da imagem.....: {txt_image}')
 
 # Criando conexão
 try: 
-    url_request = f'GET {url_image} HTTP/1.1\r\nHOST: {url_host}\r\n\r\n'
+    url_request = f'GET {url_image} HTTP/1.1\r\nHOST: {url_host}\r\nConnection:close\r\n\r\n'
     sock_img = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     buffer_size = 1024
 
