@@ -12,22 +12,15 @@ seacher2     = url0.find('/')
 reversed_url = url[::-1]
 seacher3     = reversed_url.find('/')
 reversed_url = reversed_url[:seacher3]
-finder_type  = reversed_url[::-1]
-finder_type  = finder_type.split('.')
-replace_txt  = finder_type[-1]
+name_img  = reversed_url[::-1]
+name_img  = name_img.split('.')
+name_img  = name_img[0]
 
-# Dados que serão usados.
+# Dados que serão usados. Há mais dados depois desses.
 protocol  = url[:seacher0]
 url_host  = url0[:seacher2]
 url_image = url0[seacher2:]
-arq_image = reversed_url[::-1]
-txt_image = arq_image.replace(replace_txt,'txt')
-
-print(f'Protocolo...........: {protocol}')
-print(f'URL do host.........: {url_host}')
-print(f'URL da imagem.......: {url_image}')
-print(f'Arquivo da imagem...: {arq_image}')
-print(f'Texto da imagem.....: {txt_image}')
+arq_image = name_img
 
 # Criando conexão
 try: 
@@ -65,15 +58,43 @@ while True:
     data = sock_img.recv(buffer_size)
     if not data: break
     data_ret += data
+    sys.stdout.write(f'\rBytes baixados: {len(data_ret)} bytes')
+    sys.stdout.flush()
 
-# Obtendo o tamanho da imagem
-img_size = -1
+# Obtendo o tamanho da imagem e o tipo de aquivo.
+type_name = ''
+confir1   =  confir2  =  False
+img_size  = -1
 tmp = data_ret.split('\r\n'.encode())
 for line in tmp:
-   if 'Content-Length:'.encode() in line:
-      img_size = int(line.split()[1])
-      break
-print(f'\nTamanho da Imagem: {img_size} bytes')
+    # Tamamho do cabeçalho.
+    if 'Content-Length:'.encode() in line:
+        img_size = int(line.split()[1])
+        confir1 = True
+    # Tipo de arquivo.
+    if 'Content-Type:'.encode() in line:
+        type_name = str(line.split()[1])
+        confir2 = True
+    if confir1 == True and confir2 == True: break
+
+# Dados que serão usados.
+type_name  = type_name.split('/')[1]
+type_name  = type_name.replace("'","")
+txt_image  = name_img + '.txt'
+arq_image += f'.{type_name}'
+header_len = len(data_ret) - img_size
+
+print('\n')
+print('-' * 100)
+print(f'Protocolo..............: {protocol}')
+print(f'URL do host............: {url_host}')
+print(f'URL da imagem..........: {url_image}')
+print(f'Arquivo da imagem......: {arq_image}')
+print(f'Texto da imagem........: {txt_image}')
+print(f'Tamanho do cabeçalho...: {header_len} bytes')
+print(f'Tamanho da Imagem......: {img_size} bytes')
+print(f'Tamanho total..........: {len(data_ret)} bytes')
+print('-' * 100)
 
 # Separando o Cabeçalho dos Dados
 delimiter = '\r\n\r\n'.encode()
