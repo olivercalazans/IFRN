@@ -42,12 +42,12 @@ try:
         sock_img   = context.wrap_socket(socket_rss, server_hostname=url_host)
         sock_img.send(url_request.encode())
     else:
-        print('Apenas as URLs com protocolos HTTP e HTTPS são aceitas.')
+        print('\nApenas as URLs com protocolos HTTP e HTTPS são aceitas.')
         print(f'Protocolo da URL informada: {protocol}')
         print('Os demais protocolos serão adicionados em breve.')
         sys.exit()
 except:
-    print('Erro ao criar a conexão')
+    print('\nErro ao criar a conexão')
     print(print(f'ERRO...:{sys.exc_info()[0]}'))
     sys.exit()
 
@@ -112,6 +112,6 @@ try:
     with open(f'{txt_image}','w',encoding='utf-8') as writing_header:
         writing_header.write(headers.decode('utf-8'))
 except:
-    print('Erro ao salvar o arquivo.')
+    print('\nErro ao salvar o arquivo.')
     print(print(f'ERRO...:{sys.exc_info()[0]}'))
     sys.exit()
