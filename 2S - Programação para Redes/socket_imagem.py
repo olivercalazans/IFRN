@@ -82,7 +82,6 @@ type_name  = type_name.split('/')[1]
 type_name  = type_name.replace("'","")
 txt_image  = name_img + '.txt'
 arq_image += f'.{type_name}'
-header_len = len(data_ret) - img_size
 
 print('\n')
 print('-' * 100)
@@ -91,9 +90,7 @@ print(f'URL do host............: {url_host}')
 print(f'URL da imagem..........: {url_image}')
 print(f'Arquivo da imagem......: {arq_image}')
 print(f'Texto da imagem........: {txt_image}')
-print(f'Tamanho do cabeçalho...: {header_len} bytes')
 print(f'Tamanho da Imagem......: {img_size} bytes')
-print(f'Tamanho total..........: {len(data_ret)} bytes')
 print('-' * 100)
 
 # Separando o Cabeçalho dos Dados
