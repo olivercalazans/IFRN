@@ -1,5 +1,5 @@
 Cada código foi um projeto ou atividade feito para a disciplina de PROGRAMAÇÃO PARA REDES.
-Abaixo está uma descrição do que cada código faz.
+Abaixo está uma breve descrição do que cada código faz.
 
 # alunos_ifrn.py:
      Esse código faz uma requisição ao IFRN de todos os campis e alunos. Com esses dados ele faz uma lista de de todos os campis com a quantidade de cursos que cada um possui.
