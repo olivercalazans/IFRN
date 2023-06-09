@@ -3,7 +3,7 @@ Essa pasta contém projetos e atividades que desenvolvi para a disciplina de pro
 Abaixo está uma breve descrição do que cada código faz.
 
 - **alunos_ifrn.py** -
-     Esse código faz uma requisição ao IFRN de todos os campis e alunos. Com esses dados ele faz uma lista de de todos os campis com a quantidade de cursos que cada um possui.
+     Esse código faz uma requisição ao IFRN de todos os campis e seus dados. Com esses dados, ele faz uma lista de de todos os campis com a quantidade de cursos que cada um possui.
      Além disso, se for escolhido um campi, é feito uma lista de todos os cursos desse campi com a quantidade de alunos por curso. Se desejar, ele cria um arquivo com os dados do campi escolhido.
      
 - **eleicoes.py** -
