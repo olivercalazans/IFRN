@@ -22,9 +22,9 @@ while True:
     # Recebendo informações.
     dados = (sock.recv(10240)).decode('utf-8')
     
-    tamanho_total = 'desconhecido'
-    if 'Size:' in dados:
-       tamanho_total = int(dados.split(':')[1])
+    tamanho_total = '?????'
+    if 'SIZE:' in dados.upper():
+       tamanho_total = int(dados.split(':')[-1])
 
     # Criando diretório para salvar o arquivo.
     DIRETORIO  = os.path.dirname(os.path.abspath(__file__))
