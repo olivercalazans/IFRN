@@ -62,8 +62,6 @@ while True:
                 pacotes += 1
                 sys.stdout.write(f'\rPacotes recebidos: {pacotes}/{quantidade_pacotes}')
                 sys.stdout.flush()
-                sys.stdout.write(f'\rDados processados: {bytes_recebidos}/{tamanho_total}')
-                sys.stdout.flush()
 
     # Fechando socket.
     sock.close()
