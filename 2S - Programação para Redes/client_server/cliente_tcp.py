@@ -12,7 +12,6 @@ while True:
     
     if nome_arq.lower() == 'exit': 
         sock.send(nome_arq.encode('utf-8'))
-        sock.close()
         break
 
     # Enviando o nome do arquivo.
@@ -20,41 +19,51 @@ while True:
     sock.send(nome_arq.encode('utf-8'))
 
     # Recebendo informações.
-    dados = (sock.recv(10240)).decode('utf-8')
+    confirmacao = (sock.recv(10240)).decode('utf-8')
     
-    tamanho_total = '?????'
-    if 'SIZE:' in dados.upper():
-       tamanho_total = int(dados.split(':')[-1])
-
-    # Criando diretório para salvar o arquivo.
-    DIRETORIO  = os.path.dirname(os.path.abspath(__file__))
-    DIRETORIO += '\\img_client\\'
-    
-    try:
-        os.mkdir(DIRETORIO)
-    except FileExistsError:
-        print('O diretório já existe.')
-    except:
-        print(f'ERRO...:{sys.exc_info()[0]}')
+    if confirmacao == 'false':
+        print(f'O arquivo "{nome_arq}" não existe.')
     else:
-        print('Diretório criado com sucesso.')
+        dados = (sock.recv(10240)).decode('utf-8')
 
-    # Gravando os dados em um arquivo.
-    print(f'Gravando o arquivo: {nome_arq} ({tamanho_total} bytes)')
-    caminho = DIRETORIO + nome_arq
-    bytes_recebidos = 0
-    pacotes = 1
-    
-    # Recebendo o conteúdo.
-    with open(caminho, 'wb') as arquivo:
-        while True:
-            dados_recebidos = sock.recv(10240)
-            if not dados_recebidos: break
-            print(f'Pacote ({pacotes}) - Dados recebidos: {dados_recebidos} bytes')
-            arquivo.write(dados_recebidos)
-            bytes_recebidos += len(dados_recebidos)
-            if bytes_recebidos >= tamanho_total: break
-            pacotes += 1
+        tamanho_total = quantidade_pacotes = '?????'
+        if 'SIZE:' in dados.upper() and 'PACOTES' in dados.upper():
+            aux = dados.split(',')
+            tamanho_total = int(aux[0].split(':')[-1])
+            quantidade_pacotes = int(aux[-1].split(':')[-1])
 
-# Fechando socket.
-sock.close()
+        # Criando diretório para salvar o arquivo.
+        DIRETORIO  = os.path.dirname(os.path.abspath(__file__))
+        DIRETORIO += '\\img_client\\'
+        
+        try:
+            os.mkdir(DIRETORIO)
+        except FileExistsError:
+            print('O diretório já existe.')
+        except:
+            print(f'ERRO...:{sys.exc_info()[0]}')
+        else:
+            print('Diretório criado com sucesso.')
+
+        # Gravando os dados em um arquivo.
+        print(f'Gravando o arquivo: {nome_arq} ({tamanho_total} bytes)')
+        caminho = DIRETORIO + nome_arq
+        bytes_recebidos = pacotes = 0
+        
+        # Recebendo o conteúdo.
+        with open(caminho, 'wb') as arquivo:
+            while True:
+                dados_recebidos = sock.recv(10240)
+                if not dados_recebidos: break
+                print(f'Pacote ({pacotes}) - Dados recebidos: {dados_recebidos} bytes')
+                arquivo.write(dados_recebidos)
+                bytes_recebidos += len(dados_recebidos)
+                if bytes_recebidos >= tamanho_total: break
+                pacotes += 1
+                sys.stdout.write(f'\rPacotes recebidos: {pacotes}/{quantidade_pacotes}')
+                sys.stdout.flush()
+                sys.stdout.write(f'\rDados processados: {bytes_recebidos}/{tamanho_total}')
+                sys.stdout.flush()
+
+    # Fechando socket.
+    sock.close()
