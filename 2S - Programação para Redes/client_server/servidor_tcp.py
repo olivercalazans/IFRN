@@ -25,22 +25,24 @@ try:
         print('Aguardando pedido...')
         
         while True:
-            while True:
-                # Recebendo o nome e verificando se existe.
-                pedido = (conexao.recv(10240)).decode('utf-8')
-                if pedido.upper() == 'EXIT':
-                    print(f'\nO cliente "{cliente}" desconectou.')
-                    break
-                else:
-                    DIRETORIO = os.path.dirname(os.path.abspath(__file__))
-                    nome_arq  = DIRETORIO + '\\img_server\\' + pedido
-                    verificacao = os.path.exists(nome_arq)
-                    if verificacao == False:
-                        conexao.send('false'.encode('utf-8'))
-                    elif verificacao == True: 
-                        conexao.send('true'.encode('utf-8'))
+            # Recebendo o nome e verificando se existe.
+            pedido = (conexao.recv(10240)).decode('utf-8')
+            if pedido.upper() == 'EXIT':
+                print(f'\nO cliente "{cliente}" desconectou.')
+                break
+            DIRETORIO  = os.path.dirname(os.path.abspath(__file__))
+            DIRETORIO += '\\img_server\\'
+            nome_arq  = DIRETORIO + pedido
+            imagens = os.listdir(DIRETORIO)
+            if not pedido in imagens:
+                conexao.send('false'.encode('utf-8'))
+                sock.close()
+                sys.exit()
+            else: 
+                conexao.send('true'.encode('utf-8'))
+
             if pedido.upper() == 'EXIT': break
-            
+
             print(f'\nEnviando header do {pedido}')
 
             # Enviando o header com o tamanho do arquivo.
@@ -62,11 +64,13 @@ try:
                     pacotes_enviados += 1
                     sys.stdout.write(f'\rPacotes enviados: {pacotes_enviados}')
                     sys.stdout.flush()
-                print(f'Arquivo "{pedido}" enviado.')
+                print(f'\nArquivo "{pedido}" enviado.')
 except KeyboardInterrupt:
     print('CTRL + C foi pressionado.')
     sock.close()
     sys.exit()
+except SystemExit:
+    print('\nArquivo não encontrado.') 
 except:
     print(f'ERRO...:{sys.exc_info()}')
     sock.close
