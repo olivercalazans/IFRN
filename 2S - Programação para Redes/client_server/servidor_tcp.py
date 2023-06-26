@@ -28,8 +28,9 @@ try:
 
                 # Enviando o header com o tamanho do arquivo.
                 tamanho_arquivo = os.path.getsize(nome_arq)
-                header = f'Size:{tamanho_arquivo}'
-                sock.send(header.encode('utf-8'))
+                header = f'SIZE:{tamanho_arquivo}'
+                print(header)
+                conexao.send(header.encode('utf-8'))
 
                 # Enviando arquivo.
                 with open(nome_arq, 'rb') as arquivo:
