@@ -23,6 +23,8 @@ while True:
     
     if confirmacao == 'false':
         print(f'O arquivo "{nome_arq}" não existe.')
+        sock.close()
+        sys.exit()
     else:
         dados = (sock.recv(10240)).decode('utf-8')
 
@@ -55,10 +57,8 @@ while True:
             while True:
                 dados_recebidos = sock.recv(10240)
                 if not dados_recebidos: break
-                print(f'Pacote ({pacotes}) - Dados recebidos: {dados_recebidos} bytes')
                 arquivo.write(dados_recebidos)
                 bytes_recebidos += len(dados_recebidos)
-                if bytes_recebidos >= tamanho_total: break
                 pacotes += 1
                 sys.stdout.write(f'\rPacotes recebidos: {pacotes}/{quantidade_pacotes}')
                 sys.stdout.flush()
