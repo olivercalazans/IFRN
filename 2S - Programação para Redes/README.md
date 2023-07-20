@@ -13,5 +13,5 @@ Abaixo está uma breve descrição do que cada código faz.
 
 - **socket_imagem.py** -
      Esse código faz o download de uma imagem ou pdf a partir da URL informada, e salva os dados do header em um arquivo.
-- **servidor_multifunc** -
+- **servidor_multifunc.py** -
      Um servidor que tem várias funções como chat, download/upload de arquivos, etc.
