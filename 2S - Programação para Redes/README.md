@@ -1,6 +1,6 @@
 # PROGRAMAÇÃO PARA REDES
 Essa pasta contém projetos e atividades que desenvolvi para a disciplina de programação para redes de computadores.
-Abaixo está uma breve descrição do que cada código faz.
+Abaixo está uma breve descrição do que cada código faz. Dentro do código/pasta há uma descrição mais detalhada.
 
 - **client_server.py** - Dois códigos, cliente e servidor, onde o cliente faz o pedido de uma imagem e o servidor envia.
 
