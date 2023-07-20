@@ -13,7 +13,7 @@ SERVER_FILES = DIRETORIO + '\\server_files\\'
 # ================================== ÁREA DE FUNÇÕES ==================================================
 
 def telegram(logg):
-    API_KEY = '5963236170:AAHAGkg0acf4Wp3-kZac-zlYKD6DpouHYoI'
+    API_KEY = ''
     url_req = f'https://api.telegram.org/bot{API_KEY}'
     requisicao = requests.get(url_req + '/getUpdates')
     retorno = requisicao.json()
