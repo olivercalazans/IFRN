@@ -1,12 +1,13 @@
-import socket, threading, sys, requests, os
+import socket, threading, sys, requests, os, datetime
 from chave_api import API_KEY
 
 # ================================= ÁREA DE CONSTANTES ================================================
 
-ALL_CLIENTS  = list()  # Pessoas logadas ao servidor.
+ALL_CLIENTS  = list()  # Lista de IPs e sockets (tupla).
+ATIVIDADE    = list()  # Atividade dos clientes.
 CODIGO_TRAD  = 'utf-8'
 DIRETORIO    = os.path.dirname(os.path.abspath(__file__))
-LISTA_IPS    = list()
+LISTA_IPS    = list()  # Lista de IPs.
 SERVER_FILES = DIRETORIO + '\\server_files\\'
 
 # ================================== ÁREA DE FUNÇÕES ==================================================
@@ -20,24 +21,30 @@ def telegram(logg):
     resposta = {'chat_id':id_chat,'text':mensagem}
     envio = requests.post(url_req + '/sendMessage', data=resposta)
 
+# /l: lista de ips.
 def lista_ips(conexao, cliente):
     ips = ''
     for ip in LISTA_IPS:
         if ip != cliente:
             ips += f'{ip}/'
     conexao.send(ips.encode(CODIGO_TRAD))
+    ATIVIDADE.append(f'{datetime.datetime.now()}|"/l":{cliente}')
 
-# Essa função faz uma lista dos arquivos do servidor.
-def lista_arquivos():
+# /f: Lista de arquivos do servidor.
+def lista_arquivos(conexao, cliente):
     nomes     = os.listdir(SERVER_FILES)
-    full_list = [f'{nome}: {os.path.getsize(SERVER_FILES + nome)} bytes' for nome in nomes]
-    return full_list
-
+    full_list = ''
+    for nome in nomes:
+        full_list += f'{nome}: {os.path.getsize(SERVER_FILES + nome)} bytes/'
+    conexao.send(full_list).encode(CODIGO_TRAD)
+    ATIVIDADE.append(f'{datetime.datetime.now()}|"/f":{cliente}')
+    
 # Thread onde o cliente faz a interação com o servidor ------------------------------------
 def servicos(conexao, cliente):
     logg = f'Login: {cliente}'
     aviso_in = threading.Thread(target=telegram, args=(logg,))
     aviso_in.start()
+    ATIVIDADE.append(f'{datetime.datetime.now()}|{logg}')
     print(logg)
     
     while True:
@@ -49,11 +56,17 @@ def servicos(conexao, cliente):
             logg = f'Logout: {cliente}'
             aviso_out = threading.Thread(target=telegram, args=(logg,))
             aviso_out.start()
+            ATIVIDADE.append(f'{datetime.datetime.now()}|{logg}')
             print(logg)
             ALL_CLIENTS.remove((conexao, cliente))
+            
         if serv == '/l':
             all_ips = threading.Thread(target=lista_ips, args=(conexao, cliente,))
             all_ips.start()
+        
+        if serv == '/f':
+            files = threading.Thread(target=lista_arquivos, args=(conexao, cliente,))
+            files.start()
 
 
 # =====================================================================================================
