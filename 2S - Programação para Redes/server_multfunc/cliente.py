@@ -18,7 +18,10 @@ while True:
         print('DESLOGADO DO SERVIDOR')
         sys.exit()
     
-    if servico == '/l':
+    elif servico == '/l':
         ips = conn.recv(1024).decode(CODF)
         ips = ips.split('/')
         for ip in ips: print(ip)
+    
+    elif servico == '/f':
+        arq = conn.recv(1024).decode(CODF)
