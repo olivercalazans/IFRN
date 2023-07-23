@@ -1,4 +1,4 @@
-import socket, sys, os
+import socket, sys, os, threading
 
 # ===================================================
 SMALL_BF  = 1024
@@ -43,14 +43,25 @@ while True:
         for loop in range(pacotes_f): arquivos += conn.recv(SMALL_BF).decode(TRADUCAO)
         arquivos = arquivos.split('/')
         for arquivo in arquivos: print(arquivo)
-    
+    # Download de arquivos.
     elif servico == '/d':
-        tamanho_arq = int(conn.recv(SMALL_BF))
-        dados_recv  = 0
-        with open(CLIENT_FL + pedido.split(':')[-1], 'wb') as file:
-            while dados_recv < tamanho_arq:
-                data = conn.recv(BIG_BF)
-                file.write(data)
-                dados_recv += len(data)
-                sys.stdout.write(f'\r {dados_recv}/{tamanho_arq} bytes recebidos')
-                sys.stdout.flush()
+        def download_file():
+            try:
+                print('Baixando arquivo...')
+                tamanho_arq = int(conn.recv(SMALL_BF).decode(TRADUCAO))
+                print(tamanho_arq)
+                dados_recv  = 0
+                with open(CLIENT_FL + pedido.split(':')[-1], 'wb') as file:
+                    while dados_recv < tamanho_arq:
+                        data = conn.recv(BIG_BF)
+                        file.write(data)
+                        dados_recv += len(data)
+            except: print(f'\nERRO...:{sys.exc_info()}')
+            else: print('Download concluído.')
+                
+        if pedido.split(':')[-1] in os.listdir(CLIENT_FL):
+            print(f'O arquivo "{pedido.split(":")[-1]}" já existe.')
+        else:
+            tDOWNLOAD = threading.Thread(target=download_file)
+            tDOWNLOAD.start()
+            
