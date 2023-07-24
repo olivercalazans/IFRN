@@ -78,7 +78,7 @@ def download(conexao, cliente, entrada_comando):
                 if not data: break
                 conexao.send(data)
     except:
-        print(f'{cliente}: Envio interrompido!!!')
+        print(f'{cliente}: Envio interrompido > {sys.exc_info()[0]}')
         ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/d":{cliente}|{arquivo_d}>>{sys.exc_info()[0]}')
     else:
         print(f'{cliente} > "/d" - {arquivo_d}')
@@ -89,7 +89,7 @@ def upload(conexao, cliente, entrada_comando):
     try:
         arquivo_u = entrada_comando.split(':')[-1]
         print(f'Upload do cliente {cliente} > {arquivo_u}')
-        tamanho_u = int((conexao.recv(SMALL_BUFFER)).decode(TRADUCAO))
+        tamanho_u = int((conexao.recv(SMALL_BUFFER)))
         if arquivo_u in SERVER_FILES:
             num = 1
             arquivo_u += f'{num}'
