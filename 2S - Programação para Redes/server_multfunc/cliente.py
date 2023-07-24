@@ -50,25 +50,28 @@ while True:
         for arquivo in arquivos: print(arquivo)
     # Download de arquivos.
     elif servico == '/d':
-        def download_file():
-            try:
-                print('Baixando arquivo...')
-                tamanho_arq = int(conn.recv(SMALL_BF).decode(TRADUCAO))
-                dados_recv  = 0
-                with open(CLIENT_FL + pedido.split(':')[-1], 'wb') as file:
-                    while dados_recv < tamanho_arq:
-                        data = conn.recv(BIG_BF)
-                        file.write(data)
-                        dados_recv += len(data)
-            except: print(f'\nERRO...:{sys.exc_info()}')
-            else: print('Download concluído.')
-                
-        if pedido.split(':')[-1] in os.listdir(CLIENT_FL):
-            print(f'O arquivo "{pedido.split(":")[-1]}" já existe.')
-        else:
-            tDOWNLOAD = threading.Thread(target=download_file)
-            tDOWNLOAD.start()
-    
+        try:
+            arquivo_d = pedido.split(':')[-1]
+            print(f'Baixando arquivo: {arquivo_d}')
+            if arquivo_d in CLIENT_FL:
+                num = 1
+                arquivo_d += f'{num}'
+                while arquivo_d in CLIENT_FL:
+                    num2 = num + 1
+                    arquivo_d.replace(str(num), str(num2))
+                    num += 1
+            tamanho_arq = int(conn.recv(SMALL_BF).decode(TRADUCAO))
+            dados_recv  = 0
+            with open(CLIENT_FL + arquivo_d, 'wb') as file:
+                while dados_recv < tamanho_arq:
+                    data = conn.recv(BIG_BF)
+                    file.write(data)
+                    dados_recv += len(data)
+                    sys.stdout.write(f'\rBytes recebidos: {dados_recv}/{tamanho_arq}')
+                    sys.stdout.flush()
+        except: print(f'\nERRO...:{sys.exc_info()}')
+        else: print('\nDownload concluído.')
+            
     elif servico == '/u':
         def upload_file():
             try:
@@ -85,3 +88,4 @@ while True:
             else: print(f'Upload concluído: {pedido.split(":")[-1]}')
         tUPLOAD = threading.Thread(target=upload_file)
         tUPLOAD.start()
+
