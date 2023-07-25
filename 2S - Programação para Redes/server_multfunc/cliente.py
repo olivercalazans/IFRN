@@ -1,4 +1,6 @@
-import socket, sys, os, threading, time
+import socket, sys, os, time
+
+# lista de arquivos
 
 # ===================================================
 SMALL_BF  = 1024
@@ -22,8 +24,12 @@ conn.connect((HOST, PORT))
 
 while True:
     pedido  = input('>')
-    conn.send(pedido.encode(TRADUCAO))
     servico = pedido[:2]
+
+    if servico == '/u':
+        len_file = str(os.path.getsize(CLIENT_FL + pedido.split(':')[-1]))
+        pedido += f':{len_file}'
+    conn.send(pedido.encode(TRADUCAO))
 
     # Lista de comandos.
     if servico == '/?':
@@ -52,14 +58,19 @@ while True:
     elif servico == '/d':
         try:
             arquivo_d = pedido.split(':')[-1]
-            print(f'Baixando arquivo: {arquivo_d}')
-            if arquivo_d in CLIENT_FL:
+            arq_lista = os.listdir(CLIENT_FL)
+            if arquivo_d in arq_lista:
                 num = 1
-                arquivo_d += f'{num}'
-                while arquivo_d in CLIENT_FL:
+                file_name = arquivo_d.split('.')[0]
+                file_type = arquivo_d.split('.')[1]
+                file_name += f'({num})'
+                arquivo_d = file_name + '.' + file_type
+                while arquivo_d in arq_lista:
                     num2 = num + 1
                     arquivo_d.replace(str(num), str(num2))
+                    print(arquivo_d)
                     num += 1
+            print(f'Baixando arquivo: {arquivo_d}')
             tamanho_arq = int(conn.recv(SMALL_BF).decode(TRADUCAO))
             dados_recv  = 0
             with open(CLIENT_FL + arquivo_d, 'wb') as file:
@@ -69,23 +80,17 @@ while True:
                     dados_recv += len(data)
                     sys.stdout.write(f'\rBytes recebidos: {dados_recv}/{tamanho_arq}')
                     sys.stdout.flush()
-        except: print(f'\nERRO...:{sys.exc_info()}')
-        else: print('\nDownload concluído.')
+        except: print(f'ERRO...:{sys.exc_info()}\n')
+        else: print('Download concluído.\n')
             
     elif servico == '/u':
-        def upload_file():
-            try:
-                file_path = CLIENT_FL + pedido.split(':')[-1]
-                tamanho_u = str(os.path.getsize(file_path))
-                conn.send(((tamanho_u).encode(TRADUCAO)))
-                time.sleep(2)
-                while True:
-                    with open(file_path, 'rb') as file:
-                        data = file.read(BIG_BF)
-                        if not data: break
-                        conn.send(data)
-            except: print(f'\nERRO...:{sys.exc_info()}')
-            else: print(f'Upload concluído: {pedido.split(":")[-1]}')
-        tUPLOAD = threading.Thread(target=upload_file)
-        tUPLOAD.start()
-
+        try:
+            file_path = CLIENT_FL + pedido.split(':')[1]
+            time.sleep(2)
+            with open(file_path, 'rb') as file:
+                while True: 
+                    data = file.read(BIG_BF)
+                    if not data: break
+                    conn.send(data)
+        except: print(f'ERRO...:{sys.exc_info()}\n')
+        else: print(f'Upload concluído: {pedido.split(":")[1]}\n')
