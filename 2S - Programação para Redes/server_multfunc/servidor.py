@@ -1,6 +1,10 @@
 import socket, threading, sys, requests, os, datetime, math, time
 from chave_api import API_KEY
 
+
+# erro ao sair abruptamente, lista de ips
+# enviar uma aviso caso o cliente seja o unico no servidor.
+
 # ================================= ÁREA DE CONSTANTES ================================================
 
 SMALL_BUFFER = 1024
@@ -10,7 +14,7 @@ ATIVIDADE    = list()  # Atividade dos clientes.
 LISTA_IPS    = list()  # Lista de IPs.
 TRADUCAO     = 'utf-8'
 DATA_DE_HOJE = str(datetime.date.today())
-NUM_INTERAC  = 10  # Número de interações para escrever no arquivo.
+NUM_INTERAC  = 5  # Número de interações para escrever no arquivo.
 DIRETORIO    = os.path.dirname(os.path.abspath(__file__))
 SERVER_FILES = DIRETORIO + '\\server_files\\'
 SERVER_HISTO = DIRETORIO + '\\historico\\'
@@ -71,7 +75,7 @@ def download(conexao, cliente, entrada_comando):
         arquivo_d = entrada_comando.split(':')[-1]
         tamanho_d = str(os.path.getsize(SERVER_FILES + arquivo_d))
         conexao.send(tamanho_d.encode(TRADUCAO))
-        time.sleep(1)
+        time.sleep(2)
         with open(SERVER_FILES + arquivo_d, 'rb') as file:
             while True:
                 data = file.read(BIG_BUFFER)
@@ -87,25 +91,31 @@ def download(conexao, cliente, entrada_comando):
 # /u: Upload de arquivos para o servidor.
 def upload(conexao, cliente, entrada_comando):
     try:
-        arquivo_u = entrada_comando.split(':')[-1]
-        print(f'Upload do cliente {cliente} > {arquivo_u}')
-        tamanho_u = int((conexao.recv(SMALL_BUFFER)))
-        if arquivo_u in SERVER_FILES:
+        print(entrada_comando)
+        arquivo_u = entrada_comando.split(':')[1]
+        tamanho_u = int(entrada_comando.split(':')[2])
+        print(tamanho_u)
+        arq_server = os.listdir(SERVER_FILES)
+        print(f'Upload do cliente {cliente} > {arquivo_u[1]}')
+        if arquivo_u in arq_server:
             num = 1
-            arquivo_u += f'{num}'
-            while arquivo_u in SERVER_FILES:
+            aux_name = arquivo_u.split('.')[0]
+            aux_type = arquivo_u.split('.')[1]
+            aux_name += f'({num})'
+            arquivo_u = aux_name + aux_type
+            while arquivo_u in arq_server:
                 num2 = num + 1
                 arquivo_u.replace(str(num), str(num2))
                 num += 1
+        data_recv = 0
         with open(SERVER_FILES + arquivo_u, 'wb') as file:
-            data_recv = 0
             while data_recv < tamanho_u:
                 data = conexao.recv(BIG_BUFFER)
-                data_recv += len(data)
                 file.write(data)
+                data_recv += len(data)
     except: 
         print(f'\nERRO...:{sys.exc_info()}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{arquivo_u}>>{sys.exc_info()[0]}')
+        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{arquivo_u}>>{sys.exc_info()}')
     else:
         print(f'Upload do cliente {cliente} concluído > {arquivo_u}')
         ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{arquivo_u}')
@@ -164,7 +174,8 @@ def servicos(conexao, cliente):
                 upload_file.start()
         
         except:
-            print(f'O cliente "{cliente}" forçou a desconexão!!!')
+            print(f'\nO cliente "{cliente}" forçou a desconexão!!!')
+            print(f'{sys.exc_info()}')
             ATIVIDADE.append(f'{str(datetime.datetime.now())}|Logout forçado:{sys.exc_info()[0]}|{cliente}')
             break
         
