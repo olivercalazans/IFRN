@@ -10,6 +10,7 @@ SMALL_BUFFER = 1024
 BIG_BUFFER   = 10240
 ALL_CLIENTS  = list()  # Lista de IPs e sockets (tupla).
 ATIVIDADE    = list()  # Atividade dos clientes.
+MENSAGENS    = list()
 TRADUCAO     = 'utf-8'
 DATA_DE_HOJE = str(datetime.date.today())
 NUM_INTERAC  = 5  # Número de interações para escrever no arquivo.
@@ -39,7 +40,8 @@ def telegram(logg):
 
 # /?: Lista de comandos.
 def lista_comandos(conexao, cliente):
-    comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/d: Download do servidor']
+    comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/m: mensagem privada','/b: mensagem broadcast'
+                ,'/d: Download do servidor']
     conexao.send(('?:' + str(comandos)).encode(TRADUCAO))
     ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/l":{cliente}')
     print(f'{cliente} > "/?"')
@@ -72,18 +74,39 @@ def lista_arquivos(conexao, cliente):
 
 # /m: Mensagem/chat
 def chat_mensagem(conexao, cliente, entrada_comando):
-    porta    = entrada_comando.split(':')[1]
-    mensagem = entrada_comando.split(':')[2]
+    porta_c    = entrada_comando.split(':')[1]
+    mensagem_c = entrada_comando.split(':')[2]
     for addr in ALL_CLIENTS:
-        if porta == str(addr[1][1]):
-            conn, msg, aviso = addr[0], str(cliente[1]) + ': ' + mensagem, 'enviada'
+        if porta_c == str(addr[1][1]):
+            conn, msg, aviso = addr[0], str(cliente[1]) + ': ' + mensagem_c, 'enviada'
             break
     else:
         conn, msg, aviso = conexao, 'Cliente offline, mensagem não enviada', 'não enviada'
     
     conn.send(('m:' + msg).encode(TRADUCAO))
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/m":{cliente}|{aviso}|{mensagem}')
+    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/m":{cliente}|{aviso}|{mensagem_c}')
+    MENSAGENS.append([cliente[1],porta_c,mensagem_c])
 
+# /b: Mensagem em broadcast.
+def broadcast(conexao, cliente, entrada_comando):
+    mensagem_b = entrada_comando.split(':')[1]
+    if len(ALL_CLIENTS) == 1:
+        conexao.send('m:Mensagem não enviada. Você é o único logado.'.encode(TRADUCAO))
+        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/b":{cliente}|{"não enviada, único logado"}|{mensagem_b}')
+    else:
+        for dados_con in ALL_CLIENTS:
+            if not cliente == dados_con[1]:
+                dados_con[0].send((f'm:{cliente[1]}(broad):{mensagem_b}').encode(TRADUCAO))
+        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/b":{cliente}|{mensagem_b}')
+        MENSAGENS.append([cliente[1],'(broad)',mensagem_b])
+    
+# /h: Histório de mensagens.
+def historico(conexao, cliente):
+    mensagens_h = list(filter(lambda c: c[0] == cliente[1], MENSAGENS))
+    if len(mensagens_h) > 0:
+        conexao.send(('h:' + str(mensagens_h)).encode(TRADUCAO))
+    else:
+        conexao.send('h:0'.encode(TRADUCAO))
 
 # /d: Download de arquivos do servidor.
 def download(conexao, cliente, entrada_comando):
@@ -148,6 +171,16 @@ def servicos(conexao, cliente):
             elif serv == '/m':
                 tCHAT = threading.Thread(target=chat_mensagem, args=(conexao, cliente, entrada_comando,))
                 tCHAT.start()
+            
+            # Mensagem em broadcast.
+            elif serv == '/b':
+                tBROADCAST = threading.Thread(target=broadcast, args=(conexao, cliente, entrada_comando,))
+                tBROADCAST.start()
+            
+            # Histórico de mensagens.
+            elif serv == '/h':
+                tHISTORICO = threading.Thread(target=historico, args=(conexao, cliente,))
+                tHISTORICO.start()
             
             # Lista de arquivos.
             elif serv == '/f':
