@@ -30,6 +30,16 @@ def receptor():
             elif recp_data[0] == 'm':
                 print(recp_data[2:])
             
+            # Históico de mensagens.
+            elif recp_data[0] == 'h':
+                msg_h = recp_data[2:]
+                if msg_h == '0':
+                    print('Você ainda não enviou mensagens.')
+                else:
+                    msg_h = eval(msg_h)
+                    for linha in msg_h:
+                        print(f'{linha[0]} |> {linha[1]}: {linha[2]}')
+
             # Lista de arquivos.
             elif recp_data[0] == 'f':
                 pacotes_f = int(recp_data[2:])
@@ -76,7 +86,7 @@ tRECEPTOR.start()
 while True:
     pedido = input('\n>')
     conn.send(pedido.encode(TRADUCAO))
-    time.sleep(0.5)
+    time.sleep(0.3)
 
     # Sair do servidor.
     if pedido [:2] == '/q':
