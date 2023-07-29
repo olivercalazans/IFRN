@@ -120,16 +120,12 @@ def servicos(conexao, cliente):
 
             # Escrevendo histórico de atividades.
             if len(ATIVIDADE) >= NUM_INTERAC: 
-                arquivo = threading.Thread(target=escrevendo_historico, args=())
-                arquivo.start()
-                
-            # Lista de comandos.
-            if serv == '/?':
-                serv_list = threading.Thread(target=lista_comandos, args=(conexao, cliente,))
-                serv_list.start()
+                tHISTORICO = threading.Thread(target=escrevendo_historico, args=())
+                tHISTORICO.start()
             
-             # Deslogar do servidor.
-            elif serv == '/q':
+            
+            # Deslogar do servidor.
+            if serv == '/q':
                 logg = f'Logout: {cliente}'
                 aviso_out = threading.Thread(target=telegram, args=(logg,))
                 aviso_out.start()
@@ -137,25 +133,31 @@ def servicos(conexao, cliente):
                 print(logg)
                 ALL_CLIENTS.remove((conexao, cliente))
                 break
+            
+            # Lista de comandos.
+            elif serv == '/?':
+                tSERVER_LIST = threading.Thread(target=lista_comandos, args=(conexao, cliente,))
+                tSERVER_LIST.start()
 
             # Lista de IPs.
             elif serv == '/l':
-                all_ips = threading.Thread(target=lista_ips, args=(conexao, cliente,))
-                all_ips.start()
+                tIPS = threading.Thread(target=lista_ips, args=(conexao, cliente,))
+                tIPS.start()
             
+            # Mensagens privadas.
             elif serv == '/m':
-                msg_chat = threading.Thread(target=chat_mensagem, args=(conexao, cliente, entrada_comando,))
-                msg_chat.start()
+                tCHAT = threading.Thread(target=chat_mensagem, args=(conexao, cliente, entrada_comando,))
+                tCHAT.start()
             
             # Lista de arquivos.
             elif serv == '/f':
-                files = threading.Thread(target=lista_arquivos, args=(conexao, cliente,))
-                files.start()
+                tFILES = threading.Thread(target=lista_arquivos, args=(conexao, cliente,))
+                tFILES.start()
             
             # Download de arquivos do servidor.
             elif serv == '/d':
-                download_file = threading.Thread(target=download, args=(conexao, cliente, entrada_comando,))
-                download_file.start()
+                tDOWNLOAD = threading.Thread(target=download, args=(conexao, cliente, entrada_comando,))
+                tDOWNLOAD.start()
            
         except ConnectionResetError:
             print(f'\nO cliente "{cliente}" deslogou abruptamente!!!\n')
