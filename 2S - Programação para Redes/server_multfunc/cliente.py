@@ -10,7 +10,7 @@ PORT      = 50000
 TRADUCAO  = 'utf-8'
 DIRETORIO = os.path.dirname(os.path.abspath(__file__))
 CLIENT_FL = DIRETORIO + '\\client_file\\'
-# ================================== ÁREA DE FUNÇÕES ===================================
+# ================================ RECEPTOR DE DADOS ===================================
 
 def receptor():
         global runnig
@@ -21,21 +21,24 @@ def receptor():
                 comandos = eval(recp_data[2:])
                 for comando in comandos: print(comando)
 
+            # Lista de IPs.
             elif recp_data[0] == 'l':
                 ips = recp_data[2:].split('/')
                 for ip in ips: print(ip)
             
+            # Mensagens privadas/broadcast.
             elif recp_data[0] == 'm':
                 print(recp_data[2:])
             
+            # Lista de arquivos.
             elif recp_data[0] == 'f':
                 pacotes_f = int(recp_data[2:])
                 arquivos  = ''
                 for loop in range(pacotes_f): arquivos += conn.recv(SMALL_BF).decode(TRADUCAO)
                 arquivos = arquivos.split('/')
                 for arquivo in arquivos: print(arquivo)
-                 
 
+            # Downoad de arquivos do servidor.
             elif recp_data[0] == 'd':
                 try:
                     arquivo_d = pedido.split(':')[-1]
@@ -54,11 +57,11 @@ def receptor():
 
 # =======================================================================================
 
-# Criando socket.
+# Criando socket e conectando ao servidor.
 conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# Conectando ao servidor.
 conn.connect((HOST, PORT))
 
+# Criando arquivo para o cliente.
 try:    os.mkdir(CLIENT_FL)    
 except  FileExistsError: print('\nO diretório já existe.')
 except: print(f'\nERRO...:{sys.exc_info()[0]}')
