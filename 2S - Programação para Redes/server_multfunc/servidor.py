@@ -1,9 +1,8 @@
-import socket, threading, sys, requests, os, datetime, math, time
+import socket, threading, sys, requests, os, datetime, math, time, ssl
 from chave_api import API_KEY
 
-
+# verificador de repetição das fotos
 # erro ao sair abruptamente, lista de ips
-# enviar uma aviso caso o cliente seja o unico no servidor.
 
 # ================================= ÁREA DE CONSTANTES ================================================
 
@@ -11,7 +10,6 @@ SMALL_BUFFER = 1024
 BIG_BUFFER   = 10240
 ALL_CLIENTS  = list()  # Lista de IPs e sockets (tupla).
 ATIVIDADE    = list()  # Atividade dos clientes.
-LISTA_IPS    = list()  # Lista de IPs.
 TRADUCAO     = 'utf-8'
 DATA_DE_HOJE = str(datetime.date.today())
 NUM_INTERAC  = 5  # Número de interações para escrever no arquivo.
@@ -21,7 +19,7 @@ SERVER_HISTO = DIRETORIO + '\\historico\\'
 
 # ================================== ÁREA DE FUNÇÕES ==================================================
 
-# Criação de diretórios.
+# Escrevendo histório.
 def escrevendo_historico():
     global ATIVIDADE
     with open(SERVER_HISTO + DATA_DE_HOJE, 'a', encoding=TRADUCAO) as linha:
@@ -41,19 +39,22 @@ def telegram(logg):
 
 # /?: Lista de comandos.
 def lista_comandos(conexao, cliente):
-    comandos = ['/l: lista de IPs','/f: Lista de arquivos do servidor','/d: Download de arquivos do servidor',
-                '/u: Upload de arquivos para o servidor']
-    conexao.send((str(comandos)).encode(TRADUCAO))
+    comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/d: Download do servidor']
+    conexao.send(('?:' + str(comandos)).encode(TRADUCAO))
     ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/l":{cliente}')
     print(f'{cliente} > "/?"')
 
 # /l: lista de ips.
 def lista_ips(conexao, cliente):
-    ips = ''
-    for ip in LISTA_IPS:
-        if ip != cliente:
-            ips += f'{ip}/'
-    conexao.send(ips.encode(TRADUCAO))
+    mensagem_l = ''
+    if len(ALL_CLIENTS) == 1:
+        mensagem_l = 'Você é o único logado no servidor.'
+    else:
+        for ip in ALL_CLIENTS:
+            if ip[1] != cliente:
+                mensagem_l += f'{ip[1]}/'
+        
+    conexao.send(('l:' + mensagem_l).encode(TRADUCAO))
     ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/l":{cliente}')
     print(f'{cliente} > "/l"')
 
@@ -64,18 +65,33 @@ def lista_arquivos(conexao, cliente):
     for nome in nomes:
         full_list += f'{nome}: {os.path.getsize(SERVER_FILES + nome)} bytes/'
     pacotes_f = str(math.ceil(sys.getsizeof(full_list) / SMALL_BUFFER))
-    conexao.send(pacotes_f.encode(TRADUCAO))
+    conexao.send(('f:' + pacotes_f).encode(TRADUCAO))
     conexao.send(full_list.encode(TRADUCAO))
     ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/f":{cliente}')
     print(f'{cliente} > "/f"')
 
+# /m: Mensagem/chat
+def chat_mensagem(conexao, cliente, entrada_comando):
+    porta    = entrada_comando.split(':')[1]
+    mensagem = entrada_comando.split(':')[2]
+    for addr in ALL_CLIENTS:
+        if porta == str(addr[1][1]):
+            conn, msg, aviso = addr[0], str(cliente[1]) + ': ' + mensagem, 'enviada'
+            break
+    else:
+        conn, msg, aviso = conexao, 'Cliente offline, mensagem não enviada', 'não enviada'
+    
+    conn.send(('m:' + msg).encode(TRADUCAO))
+    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/m":{cliente}|{aviso}|{mensagem}')
+
+
 # /d: Download de arquivos do servidor.
 def download(conexao, cliente, entrada_comando):
     try: 
+        conexao.send('d'.encode(TRADUCAO))
         arquivo_d = entrada_comando.split(':')[-1]
         tamanho_d = str(os.path.getsize(SERVER_FILES + arquivo_d))
         conexao.send(tamanho_d.encode(TRADUCAO))
-        time.sleep(2)
         with open(SERVER_FILES + arquivo_d, 'rb') as file:
             while True:
                 data = file.read(BIG_BUFFER)
@@ -88,39 +104,8 @@ def download(conexao, cliente, entrada_comando):
         print(f'{cliente} > "/d" - {arquivo_d}')
         ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/d":{cliente}|{arquivo_d}')
 
-# /u: Upload de arquivos para o servidor.
-def upload(conexao, cliente, entrada_comando):
-    try:
-        print(entrada_comando)
-        arquivo_u = entrada_comando.split(':')[1]
-        tamanho_u = int(entrada_comando.split(':')[2])
-        print(tamanho_u)
-        arq_server = os.listdir(SERVER_FILES)
-        print(f'Upload do cliente {cliente} > {arquivo_u[1]}')
-        if arquivo_u in arq_server:
-            num = 1
-            aux_name = arquivo_u.split('.')[0]
-            aux_type = arquivo_u.split('.')[1]
-            aux_name += f'({num})'
-            arquivo_u = aux_name + aux_type
-            while arquivo_u in arq_server:
-                num2 = num + 1
-                arquivo_u.replace(str(num), str(num2))
-                num += 1
-        data_recv = 0
-        with open(SERVER_FILES + arquivo_u, 'wb') as file:
-            while data_recv < tamanho_u:
-                data = conexao.recv(BIG_BUFFER)
-                file.write(data)
-                data_recv += len(data)
-    except: 
-        print(f'\nERRO...:{sys.exc_info()}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{arquivo_u}>>{sys.exc_info()}')
-    else:
-        print(f'Upload do cliente {cliente} concluído > {arquivo_u}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{arquivo_u}')
+# ============================== Thread onde o cliente faz a interação com o servidor =====================================
 
-# Thread onde o cliente faz a interação com o servidor ------------------------------------------
 def servicos(conexao, cliente):
     logg = f'Login: {cliente}'
     aviso_in = threading.Thread(target=telegram, args=(logg,))
@@ -158,6 +143,10 @@ def servicos(conexao, cliente):
                 all_ips = threading.Thread(target=lista_ips, args=(conexao, cliente,))
                 all_ips.start()
             
+            elif serv == '/m':
+                msg_chat = threading.Thread(target=chat_mensagem, args=(conexao, cliente, entrada_comando,))
+                msg_chat.start()
+            
             # Lista de arquivos.
             elif serv == '/f':
                 files = threading.Thread(target=lista_arquivos, args=(conexao, cliente,))
@@ -167,16 +156,18 @@ def servicos(conexao, cliente):
             elif serv == '/d':
                 download_file = threading.Thread(target=download, args=(conexao, cliente, entrada_comando,))
                 download_file.start()
-            
-            # Upload de arquivos para o servidor.
-            elif serv == '/u':
-                upload_file = threading.Thread(target=upload, args=(conexao, cliente, entrada_comando,))
-                upload_file.start()
-        
+           
+        except ConnectionResetError:
+            print(f'\nO cliente "{cliente}" deslogou abruptamente!!!\n')
+            ATIVIDADE.append(f'{str(datetime.datetime.now())}|Logout abrupto:{sys.exc_info()[0]}|{cliente}')
+            ALL_CLIENTS.remove((conexao, cliente))
+            break
+
         except:
-            print(f'\nO cliente "{cliente}" forçou a desconexão!!!')
+            print(f'\nO cliente "{cliente}" forçou a desconexão!!!\n')
             print(f'{sys.exc_info()}')
             ATIVIDADE.append(f'{str(datetime.datetime.now())}|Logout forçado:{sys.exc_info()[0]}|{cliente}')
+            ALL_CLIENTS.remove((conexao, cliente))
             break
         
 # =====================================================================================================
@@ -211,7 +202,6 @@ try:
         thread_cliente = threading.Thread(target=servicos, args=(conexao, cliente,))
         thread_cliente.start()
         ALL_CLIENTS.append((conexao, cliente))
-        LISTA_IPS.append(cliente)
 except:
     print(f'ERRO...:{sys.exc_info()[0]}')
 
