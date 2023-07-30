@@ -111,9 +111,28 @@ while True:
         runnig = False
         print('\nDESLOGADO DO SERVIDOR')
         sys.exit()
-        
-    elif pedido == '/w':
+    
+    # Aviso para a função de download da web.
+    elif pedido[:2] == '/w':
         print('Aguarde um momento, isso pode levar alguns minutos.')
     
-    elif pedido == '/u':
-        ...
+    # Upload de arquivos para o servidor.
+    elif pedido[:2] == '/u':
+        nome_arq_u = pedido[3:]
+        print(f'Enviando arquivo: {nome_arq_u}')
+        try:
+            conn.send('ok'.encode(TRADUCAO))
+            tamanho_u = str(os.path.getsize(CLIENT_FL + nome_arq_u))
+            conn.send(tamanho_u.encode(TRADUCAO))
+            with open(CLIENT_FL + nome_arq_u, 'rb') as file:
+                data_u = file.read(BIG_BF)
+                if not data_u: break
+                conn.send(data_u)
+        except FileNotFoundError:
+            print(f'Arquivo não encontrado: {nome_arq_u}')
+            conn.send('ERRO'.encode(TRADUCAO))
+        except:
+            print(f'Erro...:{sys.exc_info()}')
+            conn.send('ERRO'.encode(TRADUCAO))
+        else:
+            print('Arquivo enviado com sucesso.')
