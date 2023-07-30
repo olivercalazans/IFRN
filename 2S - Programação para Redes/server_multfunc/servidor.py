@@ -1,8 +1,7 @@
 import socket, threading, sys, requests, os, datetime, math, ssl
 from chave_api import API_KEY
 
-# verificador de repetição das fotos
-# erro ao sair abruptamente, lista de ips
+# resolver o problema de colocar a mensagem no lugar do endereço.
 
 # ================================= ÁREA DE CONSTANTES ================================================
 
@@ -226,9 +225,33 @@ def web_download(conexao, cliente, entrada_comando):
             print(f'{cliente} > "/w" - {name_img}')
             ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/w":{cliente}|{name_img}')
     except:
-        print(f'Erro ao baixar o arquivo {name_img}: {sys.exc_info()}')
+        print(f'Erro ao baixar o arquivo {name_img}: {sys.exc_info()[0]}')
         conexao.send((str(f'w:Erro ao baixar o arquivo {name_img}: {sys.exc_info()[0]}')).encode(TRADUCAO))
         ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/w":{cliente}|{name_img}|ERRO:{sys.exc_info()[0]}|{url}')
+
+# Upload de arquivos.
+def upload(conexao, cliente, entrada_comando):
+    nome_arq_u    = entrada_comando[3:]
+    confirmacao_u = conexao.recv(SMALL_BUFFER).decode(TRADUCAO)
+    if confirmacao_u == 'ERRO':
+        print(f'Erro no upload. cliente: {cliente}, arquivo: {nome_arq_u}')
+        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}|ERRO DO CLIENTE')
+    elif confirmacao_u == 'ok':
+        print(f'Baixando arquivo "{nome_arq_u}" do cliente "{cliente}"')
+        try:
+            tamanho_arq_u = int(conexao.recv(SMALL_BUFFER))
+            dados_recb = 0
+            with open(SERVER_FILES + nome_arq_u, 'wb') as file:
+                while dados_recb < tamanho_arq_u:
+                    data_u = conexao.recv(BIG_BUFFER)
+                    file.write(data_u)
+                    dados_recb += len(data_u)
+        except: 
+            print(f'Erro ao baixar o arquivo {nome_arq_u}: {sys.exc_info()[0]}')
+            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}|{sys.exc_info()[0]}')
+        else:
+            print(f'Arquivo baixado com sucesso: {nome_arq_u}')
+            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}')
 
 # ============================== Thread onde o cliente faz a interação com o servidor =====================================
 
@@ -299,6 +322,10 @@ def servicos(conexao, cliente):
             elif serv == '/w':
                 tWEB = threading.Thread(target=web_download, args=(conexao, cliente, entrada_comando,))
                 tWEB.start()
+            
+            elif serv == '/u':
+                tUPLOAD = threading.Thread(target=upload, args=(conexao, cliente, entrada_comando,))
+                tUPLOAD.start()
            
         except ConnectionResetError:
             print(f'\nO cliente "{cliente}" deslogou abruptamente!!!\n')
