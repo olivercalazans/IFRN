@@ -63,7 +63,25 @@ def receptor():
                             sys.stdout.write(f'\rBytes recebidos: {dados_recv}/{tamanho_arq}')
                             sys.stdout.flush()
                 except: print(f'ERRO...:{sys.exc_info()}')
-                else: print('\nDownload concluído.')
+                else:   print('\nDownload concluído.')
+            
+            # Download da web (APENAS AVISOS DE ERRO).
+            elif recp_data[0] == 'w':
+                if recp_data[1] == '0':
+                    print(recp_data[2:])
+                else:
+                    try:
+                        nome_arq = recp_data[3:]
+                        print(f'Baixando arquivo: {nome_arq}')
+                        tamanho_dw = int(conn.recv(SMALL_BF))
+                        dados_recv_dw   = 0
+                        with open(CLIENT_FL + nome_arq, 'wb') as linha:
+                            while dados_recv_dw < tamanho_dw:
+                                data_dw = conn.recv(BIG_BF)
+                                linha.write(data_dw)
+                                dados_recv_dw += len(data_dw)
+                    except: print(f'ERRO...:{sys.exc_info()}')
+                    else:   print('\nDownload concluído.')
 
 # =======================================================================================
 
@@ -94,3 +112,8 @@ while True:
         print('\nDESLOGADO DO SERVIDOR')
         sys.exit()
         
+    elif pedido == '/w':
+        print('Aguarde um momento, isso pode levar alguns minutos.')
+    
+    elif pedido == '/u':
+        ...
