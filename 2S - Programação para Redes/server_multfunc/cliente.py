@@ -1,4 +1,4 @@
-import socket, sys, os, time, threading
+import socket, sys, os, time, threading, datetime
 
 # lista de arquivos
 
@@ -15,8 +15,7 @@ CLIENT_FL = DIRETORIO + '\\client_file\\'
 def receptor():
         global runnig
         while runnig:
-            recp_data = conn.recv(SMALL_BF).decode(TRADUCAO)
-            data = recp_data[2:]
+            recp_data = conn.recv(BIG_BF).decode(TRADUCAO)
             if recp_data[0] == '?':
                 comandos = eval(recp_data[2:])
                 for comando in comandos: print(comando)
@@ -82,6 +81,12 @@ def receptor():
                                 dados_recv_dw += len(data_dw)
                     except: print(f'ERRO...:{sys.exc_info()}')
                     else:   print('\nDownload concluído.')
+            
+            elif recp_data[0] == 'r':
+                urls = recp_data[2:].split('<+>')
+                for url in urls:
+                    print(url)
+
 
 # =======================================================================================
 
@@ -121,18 +126,19 @@ while True:
         nome_arq_u = pedido[3:]
         print(f'Enviando arquivo: {nome_arq_u}')
         try:
-            conn.send('ok'.encode(TRADUCAO))
             tamanho_u = str(os.path.getsize(CLIENT_FL + nome_arq_u))
             conn.send(tamanho_u.encode(TRADUCAO))
-            with open(CLIENT_FL + nome_arq_u, 'rb') as file:
-                data_u = file.read(BIG_BF)
-                if not data_u: break
-                conn.send(data_u)
-        except FileNotFoundError:
-            print(f'Arquivo não encontrado: {nome_arq_u}')
-            conn.send('ERRO'.encode(TRADUCAO))
-        except:
-            print(f'Erro...:{sys.exc_info()}')
-            conn.send('ERRO'.encode(TRADUCAO))
-        else:
-            print('Arquivo enviado com sucesso.')
+            while True:
+                sys.stdout.write(f'\r{datetime.datetime.now()}')
+                sys.stdout.flush()
+                confirmacao = conn.recv(SMALL_BF).decode(TRADUCAO)
+                if confirmacao == 'SEND_OK':
+                    with open(CLIENT_FL + nome_arq_u, 'rb') as file:
+                        while True:
+                            data_u = file.read(BIG_BF)
+                            if not data_u: break
+                            conn.send(data_u)
+                        break
+        except FileNotFoundError: print(f'Arquivo não encontrado: {nome_arq_u}')
+        except: print(f'Erro...:{sys.exc_info()}')    
+        else:   print('Arquivo enviado com sucesso.')
