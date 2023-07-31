@@ -14,7 +14,7 @@ CLIENT_FL = DIRETORIO + '\\client_file\\'
 
 def receptor():
         while True:
-            recp_data = conn.recv(BIG_BF).decode(TRADUCAO)
+            recp_data = conn.recv(SMALL_BF).decode(TRADUCAO)
 
             if recp_data[0] == '!': break
 
