@@ -289,6 +289,7 @@ def servicos(conexao, cliente):
             
             # Deslogar do servidor.
             if serv == '/q':
+                conexao.send('!'.encode(TRADUCAO))
                 logg = f'Logout: {cliente}'
                 aviso_out = threading.Thread(target=telegram, args=(logg,))
                 aviso_out.start()
