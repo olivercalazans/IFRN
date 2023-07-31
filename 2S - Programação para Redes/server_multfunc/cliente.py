@@ -13,10 +13,12 @@ CLIENT_FL = DIRETORIO + '\\client_file\\'
 # ================================ RECEPTOR DE DADOS ===================================
 
 def receptor():
-        global runnig
-        while runnig:
+        while True:
             recp_data = conn.recv(BIG_BF).decode(TRADUCAO)
-            if recp_data[0] == '?':
+
+            if recp_data[0] == '!': break
+
+            elif recp_data[0] == '?':
                 comandos = eval(recp_data[2:])
                 for comando in comandos: print(comando)
 
@@ -117,9 +119,8 @@ while True:
 
     # Sair do servidor.
     if pedido [:2] == '/q':
-        runnig = False
         print('\nDESLOGADO DO SERVIDOR')
-        sys.exit()
+        break
     
     # Aviso para a função de download da web.
     elif pedido[:2] == '/w':
