@@ -261,8 +261,9 @@ def rss_news(conexao, cliente, entrada_comando):
     urls = list()
     for url in enumerate(results):
         urls.append('<+>' + str(url[1]))
+    conexao.send('r:'.encode(TRADUCAO))
     print(f'RSS - enviando resultados >> {cliente}')
-    conexao.send(('r:' + str(urls)).encode(TRADUCAO))
+    conexao.send((str(urls)).encode(TRADUCAO))
     print(f'RSS - enviado >> {cliente}')
     ATIVIDADE.append(((str(datetime.datetime.now())), '/rss', cliente, palavra_chave))    
 
@@ -393,4 +394,3 @@ try:
         ALL_CLIENTS.append((conexao, cliente))
 except:
     print(f'ERRO...:{sys.exc_info()[0]}')
-
