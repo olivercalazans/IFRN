@@ -1,5 +1,7 @@
 import socket, threading, sys, requests, os, datetime, math, ssl
 from chave_api import API_KEY
+from feedgen.feed import FeedGenerator
+from googlesearch import search
 
 # resolver o problema de colocar a mensagem no lugar do endereço.
 
@@ -250,6 +252,19 @@ def upload(conexao, cliente, entrada_comando):
     else:
         print(f'Arquivo baixado com sucesso: {nome_arq_u}')
         ATIVIDADE.append(((str(datetime.datetime.now())), "/u", cliente, nome_arq_u))
+    
+# RSS.
+def rss_news(conexao, cliente, entrada_comando):
+    palavra_chave = entrada_comando[3:]
+    print(f'RSS - procurando: {palavra_chave}, {cliente}')
+    results = search(palavra_chave, num=10, stop=10, pause=2)
+    urls = list()
+    for url in enumerate(results):
+        urls.append('<+>' + str(url[1]))
+    print(f'RSS - enviando resultados >> {cliente}')
+    conexao.send(('r:' + str(urls)).encode(TRADUCAO))
+    print(f'RSS - enviado >> {cliente}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), '/rss', cliente, palavra_chave))    
 
 # ============================== Thread onde o cliente faz a interação com o servidor =====================================
 
@@ -321,9 +336,15 @@ def servicos(conexao, cliente):
                 tWEB = threading.Thread(target=web_download, args=(conexao, cliente, entrada_comando,))
                 tWEB.start()
             
+            # Upload de arquivos.
             elif serv == '/u':
                 tUPLOAD = threading.Thread(target=upload, args=(conexao, cliente, entrada_comando,))
                 tUPLOAD.start()
+            
+            # RSS.
+            elif serv == '/r':
+                tRSS = threading.Thread(target=rss_news, args=(conexao, cliente, entrada_comando,))
+                tRSS.start()
            
         except ConnectionResetError as err:
             print(f'\nO cliente "{cliente}" deslogou abruptamente!!!\n')
@@ -372,3 +393,4 @@ try:
         ALL_CLIENTS.append((conexao, cliente))
 except:
     print(f'ERRO...:{sys.exc_info()[0]}')
+
