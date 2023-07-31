@@ -12,7 +12,7 @@ ATIVIDADE    = list()  # Atividade dos clientes.
 MENSAGENS    = list()
 TRADUCAO     = 'utf-8'
 DATA_DE_HOJE = str(datetime.date.today())
-NUM_INTERAC  = 5  # Número de interações para escrever no arquivo.
+NUM_INTERAC  = 2       # Número de interações para escrever no arquivo.
 DIRETORIO    = os.path.dirname(os.path.abspath(__file__))
 SERVER_FILES = DIRETORIO + '\\server_files\\'
 SERVER_HISTO = DIRETORIO + '\\historico\\'
@@ -54,7 +54,7 @@ def lista_comandos(conexao, cliente):
     comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/m: mensagem privada','/b: mensagem broadcast'
                 ,'/d: Download do servidor']
     conexao.send(('?:' + str(comandos)).encode(TRADUCAO))
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/l":{cliente}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), "/?", cliente))
     print(f'{cliente} > "/?"')
 
 # /l: lista de ips.
@@ -68,7 +68,7 @@ def lista_ips(conexao, cliente):
                 mensagem_l += f'{ip[1]}/'
         
     conexao.send(('l:' + mensagem_l).encode(TRADUCAO))
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/l":{cliente}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), "/l", cliente))
     print(f'{cliente} > "/l"')
 
 # /f: Lista de arquivos do servidor.
@@ -80,7 +80,7 @@ def lista_arquivos(conexao, cliente):
     pacotes_f = str(math.ceil(sys.getsizeof(full_list) / SMALL_BUFFER))
     conexao.send(('f:' + pacotes_f).encode(TRADUCAO))
     conexao.send(full_list.encode(TRADUCAO))
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/f":{cliente}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), "/f", cliente))
     print(f'{cliente} > "/f"')
 
 # /m: Mensagem/chat
@@ -95,7 +95,7 @@ def chat_mensagem(conexao, cliente, entrada_comando):
         conn, msg, aviso = conexao, 'Cliente offline, mensagem não enviada', 'não enviada'
     
     conn.send(('m:' + msg).encode(TRADUCAO))
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/m":{cliente}|{aviso}|{mensagem_c}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), "/l", cliente, aviso, mensagem_c))
     MENSAGENS.append([cliente[1],porta_c,mensagem_c])
 
 # /b: Mensagem em broadcast.
@@ -103,12 +103,12 @@ def broadcast(conexao, cliente, entrada_comando):
     mensagem_b = entrada_comando.split(':')[1]
     if len(ALL_CLIENTS) == 1:
         conexao.send('m:Mensagem não enviada. Você é o único logado.'.encode(TRADUCAO))
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/b":{cliente}|{"não enviada, único logado"}|{mensagem_b}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/b", cliente, "não enviada, único logado", mensagem_b))
     else:
         for dados_con in ALL_CLIENTS:
             if not cliente == dados_con[1]:
                 dados_con[0].send((f'm:{cliente[1]}(broad):{mensagem_b}').encode(TRADUCAO))
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/b":{cliente}|{mensagem_b}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/b", cliente, mensagem_b))
         MENSAGENS.append([cliente[1],'(broad)',mensagem_b])
     
 # /h: Histório de mensagens.
@@ -133,10 +133,10 @@ def download(conexao, cliente, entrada_comando):
                 conexao.send(data)
     except:
         print(f'{cliente}: Envio interrompido > {sys.exc_info()[0]}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/d":{cliente}|{arquivo_d}>>{sys.exc_info()[0]}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/d", cliente, arquivo_d, str(sys.exc_info()[0])))
     else:
         print(f'{cliente} > "/d" - {arquivo_d}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/d":{cliente}|{arquivo_d}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/d", cliente, arquivo_d))
 
 # /w: Download da web.
 def web_download(conexao, cliente, entrada_comando): 
@@ -220,38 +220,36 @@ def web_download(conexao, cliente, entrada_comando):
                     conexao.send(data)
         except:
             print(f'{cliente}: Envio interrompido > {sys.exc_info()[0]}')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/w":{cliente}|{name_img}>>{sys.exc_info()[0]}')
+            ATIVIDADE.append(((str(datetime.datetime.now())), "/w", cliente, name_img, str(sys.exc_info()[0]), url))
         else:
             print(f'{cliente} > "/w" - {name_img}')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/w":{cliente}|{name_img}')
+            ATIVIDADE.append(((str(datetime.datetime.now())), "/w", cliente, name_img, url))
     except:
         print(f'Erro ao baixar o arquivo {name_img}: {sys.exc_info()[0]}')
         conexao.send((str(f'w:Erro ao baixar o arquivo {name_img}: {sys.exc_info()[0]}')).encode(TRADUCAO))
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/w":{cliente}|{name_img}|ERRO:{sys.exc_info()[0]}|{url}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/w", cliente, name_img, str(sys.exc_info()[0]), url))
 
 # Upload de arquivos.
 def upload(conexao, cliente, entrada_comando):
     nome_arq_u    = entrada_comando[3:]
-    confirmacao_u = conexao.recv(SMALL_BUFFER).decode(TRADUCAO)
-    if confirmacao_u == 'ERRO':
-        print(f'Erro no upload. cliente: {cliente}, arquivo: {nome_arq_u}')
-        ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}|ERRO DO CLIENTE')
-    elif confirmacao_u == 'ok':
-        print(f'Baixando arquivo "{nome_arq_u}" do cliente "{cliente}"')
-        try:
-            tamanho_arq_u = int(conexao.recv(SMALL_BUFFER))
-            dados_recb = 0
-            with open(SERVER_FILES + nome_arq_u, 'wb') as file:
-                while dados_recb < tamanho_arq_u:
-                    data_u = conexao.recv(BIG_BUFFER)
-                    file.write(data_u)
-                    dados_recb += len(data_u)
-        except: 
-            print(f'Erro ao baixar o arquivo {nome_arq_u}: {sys.exc_info()[0]}')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}|{sys.exc_info()[0]}')
-        else:
-            print(f'Arquivo baixado com sucesso: {nome_arq_u}')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|"/u":{cliente}|{nome_arq_u}')
+    print(f'Baixando arquivo "{nome_arq_u}" do cliente "{cliente}"')
+    try:
+        tamanho_arq_u = int(conexao.recv(SMALL_BUFFER))
+        conexao.send('SEND_OK'.encode(TRADUCAO))
+        print('Aguardando dados...')
+        dados_recb = 0
+        with open(SERVER_FILES + nome_arq_u, 'wb') as file:
+            while dados_recb < tamanho_arq_u:
+                data_u = conexao.recv(BIG_BUFFER)
+                file.write(data_u)
+                dados_recb += len(data_u)
+        conexao.send('m:Upload concluído'.encode(TRADUCAO))
+    except: 
+        print(f'Erro ao baixar o arquivo {nome_arq_u}: {sys.exc_info()}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/u", cliente, nome_arq_u, str(sys.exc_info()[0])))
+    else:
+        print(f'Arquivo baixado com sucesso: {nome_arq_u}')
+        ATIVIDADE.append(((str(datetime.datetime.now())), "/u", cliente, nome_arq_u))
 
 # ============================== Thread onde o cliente faz a interação com o servidor =====================================
 
@@ -259,7 +257,7 @@ def servicos(conexao, cliente):
     logg = f'Login: {cliente}'
     aviso_in = threading.Thread(target=telegram, args=(logg,))
     aviso_in.start()
-    ATIVIDADE.append(f'{str(datetime.datetime.now())}|{logg}')
+    ATIVIDADE.append(((str(datetime.datetime.now())), "login", cliente))
     print(logg)
     
     while True:
@@ -268,7 +266,7 @@ def servicos(conexao, cliente):
             serv = entrada_comando[:2]
 
             # Escrevendo histórico de atividades.
-            if len(ATIVIDADE) >= NUM_INTERAC: 
+            if len(ATIVIDADE) >= NUM_INTERAC or len(ALL_CLIENTS) == 0: 
                 tHISTORICO = threading.Thread(target=escrevendo_historico, args=())
                 tHISTORICO.start()
             
@@ -278,7 +276,7 @@ def servicos(conexao, cliente):
                 logg = f'Logout: {cliente}'
                 aviso_out = threading.Thread(target=telegram, args=(logg,))
                 aviso_out.start()
-                ATIVIDADE.append(f'{str(datetime.datetime.now())}|{logg}')
+                ATIVIDADE.append(((str(datetime.datetime.now())), "logout", cliente))
                 print(logg)
                 ALL_CLIENTS.remove((conexao, cliente))
                 break
@@ -327,16 +325,16 @@ def servicos(conexao, cliente):
                 tUPLOAD = threading.Thread(target=upload, args=(conexao, cliente, entrada_comando,))
                 tUPLOAD.start()
            
-        except ConnectionResetError:
+        except ConnectionResetError as err:
             print(f'\nO cliente "{cliente}" deslogou abruptamente!!!\n')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|Logout abrupto:{sys.exc_info()[0]}|{cliente}')
+            ATIVIDADE.append(((str(datetime.datetime.now())), "logout abrupto", cliente, err))
             ALL_CLIENTS.remove((conexao, cliente))
             break
 
         except:
             print(f'\nO cliente "{cliente}" forçou a desconexão!!!\n')
             print(f'{sys.exc_info()}')
-            ATIVIDADE.append(f'{str(datetime.datetime.now())}|Logout forçado:{sys.exc_info()[0]}|{cliente}')
+            ATIVIDADE.append(((str(datetime.datetime.now())), "logout forçado", cliente, str(sys.exc_info()[0])))
             ALL_CLIENTS.remove((conexao, cliente))
             break
         
@@ -374,4 +372,3 @@ try:
         ALL_CLIENTS.append((conexao, cliente))
 except:
     print(f'ERRO...:{sys.exc_info()[0]}')
-
