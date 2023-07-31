@@ -22,7 +22,7 @@ SERVER_HISTO = DIRETORIO + '\\historico\\'
 # Escrevendo histório.
 def escrevendo_historico():
     global ATIVIDADE
-    with open(SERVER_HISTO + DATA_DE_HOJE, 'a', encoding=TRADUCAO) as linha:
+    with open(SERVER_HISTO + DATA_DE_HOJE + '.txt', 'a', encoding=TRADUCAO) as linha:
         for conteudo in ATIVIDADE:
             linha.write(f'{conteudo}\n')
         ATIVIDADE = list()
@@ -348,7 +348,7 @@ else:   print(f'\nDiretório criado com sucesso!!!')
 
 # Criando arquivo para fazer os registros.
 if not DATA_DE_HOJE in os.listdir(SERVER_HISTO):
-    with open(SERVER_HISTO + DATA_DE_HOJE, 'w'): pass
+    with open(SERVER_HISTO + DATA_DE_HOJE + '.txt', 'w'): pass
     print('Arquivo criado.')
 else: print('O arquivo de hoje já existe.')
     
