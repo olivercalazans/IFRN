@@ -1,6 +1,5 @@
 import socket, threading, sys, requests, os, datetime, math, ssl
 from chave_api import API_KEY
-from feedgen.feed import FeedGenerator
 from googlesearch import search
 
 # resolver o problema de colocar a mensagem no lugar do endereço.
@@ -53,8 +52,9 @@ def repeticao(name_img):
 
 # /?: Lista de comandos.
 def lista_comandos(conexao, cliente):
-    comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/m: mensagem privada','/b: mensagem broadcast'
-                ,'/d: Download do servidor']
+    comandos = ['/l: lista de IPs','/f: Arquivos do servidor','/m: mensagem privada','/h: Historico de mensagens'
+                '/b: mensagem broadcast','/d: Download do servidor', '/w: Download da web','/u: Upload para o servidor',
+                '/r: RSS, 10 sites/links']
     conexao.send(('?:' + str(comandos)).encode(TRADUCAO))
     ATIVIDADE.append(((str(datetime.datetime.now())), "/?", cliente))
     print(f'{cliente} > "/?"')
@@ -231,7 +231,7 @@ def web_download(conexao, cliente, entrada_comando):
         conexao.send((str(f'w:Erro ao baixar o arquivo {name_img}: {sys.exc_info()[0]}')).encode(TRADUCAO))
         ATIVIDADE.append(((str(datetime.datetime.now())), "/w", cliente, name_img, str(sys.exc_info()[0]), url))
 
-# Upload de arquivos.
+# /u: Upload de arquivos.
 def upload(conexao, cliente, entrada_comando):
     nome_arq_u    = entrada_comando[3:]
     print(f'Baixando arquivo "{nome_arq_u}" do cliente "{cliente}"')
@@ -253,7 +253,7 @@ def upload(conexao, cliente, entrada_comando):
         print(f'Arquivo baixado com sucesso: {nome_arq_u}')
         ATIVIDADE.append(((str(datetime.datetime.now())), "/u", cliente, nome_arq_u))
     
-# RSS.
+# /r: RSS.
 def rss_news(conexao, cliente, entrada_comando):
     palavra_chave = entrada_comando[3:]
     print(f'RSS - procurando: {palavra_chave}, {cliente}')
