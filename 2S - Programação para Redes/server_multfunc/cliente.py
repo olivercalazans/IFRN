@@ -82,8 +82,12 @@ def receptor():
                     except: print(f'ERRO...:{sys.exc_info()}')
                     else:   print('\nDownload concluído.')
             
+            # RSS.
             elif recp_data[0] == 'r':
-                urls = recp_data[2:].split('<+>')
+                while True:
+                    urls = conn.recv(BIG_BF).decode(TRADUCAO)
+                    if len(urls) > 0: break
+                urls = urls.split('<+>')
                 for url in urls:
                     print(url)
 
