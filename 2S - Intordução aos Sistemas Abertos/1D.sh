@@ -10,5 +10,5 @@ if [ -e "$caminho" ]; then
 else
     touch "$nome_arquivo"
     chmod 444 "$nome_arquivo"
-    echo "Arquivi criado com sucesso"
+    echo "Arquivo criado com sucesso"
 fi
