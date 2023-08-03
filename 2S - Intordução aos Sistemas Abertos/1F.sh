@@ -9,8 +9,8 @@ else
     if grep -q "^$nome:" /etc/paswd; then
         echo "Esse usuário já existe"
     else
-        adduser -m -s /bin/bash "$nome"
-        echo "$nome:senha_padrao" | chpasswd
+        useradd -m -s /bin/bash -c "$nome"
+        echo "$nome:" | chpasswd -e
         echo "Usuário criado com sucesso!!!"
     fi
 fi
