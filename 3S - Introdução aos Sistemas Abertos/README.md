@@ -1,6 +1,8 @@
 # INTRODUÇÃO AOS SISTEMAS ABERTOS (LINUX)
 Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhecimentos em Linux.
 
+- *atividade1.sh* - Script de uma atividade sobre criação e manipulação de arquivos e diretórios.
+
 - *imc.sh* - Script que faz o cálculo do IMC e devolve o resultado e o "status".
 
 - *media_escolar.sh* - Script que recebe as notas e devolve a média e a situação.
