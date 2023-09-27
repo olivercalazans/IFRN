@@ -39,7 +39,7 @@ echo 'L)'
 mv -v ~/foto1.jpg ~/pessoal/fotos/antigas/foto1-2021.jpg
 
 echo 'M)'
-pwd ; mv ~/foto2.jpg fotos/antigas/foto2-2022.jpg
+pwd ; mv -v ~/foto2.jpg fotos/antigas/foto2-2022.jpg
 
 echo 'N)'
 touch ~/linux.doc ~/comandos.txt ; echo '"linux.doc" e "comandos.txt" criados'
