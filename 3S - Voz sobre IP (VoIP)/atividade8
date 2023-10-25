@@ -1,0 +1,45 @@
+SIP.CONF
+
+[atv8]
+type=friend
+context=atendimentoBancos
+secret=1234
+host=dynamic
+nat=force_rpot,comedia
+directmedia=no
+callerid="oliver"<565601>
+qualify=yes
+
+EXTENSIONS.CONF
+
+[atendimentoBancos]
+exten => _0800156XXXX,1,NoOp("Atendimento chamada de ${CALLERID(dnid)}")
+
+; VERIFICANDO A HORA PARA REPRODUZIR A SAUDACAO CORRETA
+        same => n,Set(hora=${STRFTIME(${EPOCH},,%H)})
+        same => n,Set(saudacao=${IF($[${hora}>=00 & ${hora}<=05]?boa noite:${IF($[${hora}>=06 & ${hora}<=11]?bom dia:${IF($[${hora}>=12 & ${hora}<=17]?boa tarde:${IF($[${hora}>=18 & ${hora}<=23]?boa noite)})})})})
+        same => n,Espeak("${saudacao}",any)
+
+; VERIFICANDO SE OS NUMEROS SAO VALIDOS
+        same => n,Set(Tipo=${CALLERID(dnid):7:1})
+        same => n,GotoIf($[${Tipo} != 0 & ${Tipo} != 1]?numeroInvalido)
+        same => n,Set(bankID=${CALLERID(dnid):8:3})
+        same => n,GotoIf($[${bankID} != 001 & ${bankID} != 237 & ${bankID} != 341 & ${bankID} != 033]?numeroInvalido)
+
+; VERIFICANDO QUAL PRODUTO E BANCO
+        same => n,Set(correnteOuCredito=${IF($[${Tipo}=0]?conta corrente:${IF($[${Tipo}=1]?cartao de credito:Invalido)})})
+        same => n,Set(bankName=${IF($[${bankID}=001]?banco do brasil:${IF($[${bankID}=237]?bradesco:${IF($[${bankID}=341]?itau:${IF($[${bankID}=033]?santander)}})}})})
+
+; REPRODUZINDO MENSAGEM COM OS DADOS EXTRAIDOS
+        same => n,Espeak("Voce ligou para o atendimento de ${correnteOuCredito} do ${bankName}. voce ligou do numero",any)
+        same => n,SayDigits(${CALLERID(num)})
+        same => n,Espeak("todos os nossos atendentes estao ocupados. grave sua mensagem que retornaremos oportunamente",any)
+        same => n,Voicemail(0001@default,b)
+        same => Hangup()
+
+; NUMERO INVALIDO
+        same => n(numeroInvalido),Espeak("numero invalido")
+        same => Hangup()
+
+exten => 9797,1,VoiceMailMain(0001)
+        same => n,Hangup
