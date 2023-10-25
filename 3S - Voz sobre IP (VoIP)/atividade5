@@ -1,0 +1,34 @@
+SIP.CONF
+
+[oliver]
+type=friend
+context=menu
+secret=1234
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid="oliver central"<123456>
+
+EXTENSIONS.CONF
+
+[menu]
+exten => 5605,1,Answer()
+        same => n,Espeak("digite 1 para gravar um audio, 2 para ouvir o audio gravado, 3 para ouvir seu nome completo ou 0 para finalizar",any)
+        same => n,WaitExten(10) ; TEMPO DE ESPERA PARA RECEBER UM DOS VALORES
+
+exten => 1,1,Record(pt_BR//audio_atv5:gsm); GRAVANDO AUDIO
+params=filename:formato
+        same => n,Goto(menu,5605,1); VOLTANDO AO INICIO
+
+exten => 2,1,Playback(audio_atv5); OUVINDO O AUDIO GRAVADO NA OPICAO 1
+        same => n,Goto(menu,5605,1); VOLTANDO AO INICIO
+
+exten => 3,1,Playback(nomeGravado); O NOME GRAVADO E FALADO
+        same => n,Goto(menu,5605,1); VOLTANDO AO INICIO
+
+exten => 0,1,Hangup(); FINALIZANDO A LIGACAO
+
+exten => i,1,Espeak("caracter invalido",any)
+        same => n,Goto(menu,5605,1); VOLTANDO AO INICIO
+
+exten => t,1,hangup(); FINALIZANDO POR TIMEOUT
