@@ -1,0 +1,21 @@
+SIP.CONF
+
+[oliver]
+type=friend
+context=aula
+secret=1234
+host=dynamic
+nat=force_rpot,comedia
+directmedia=no
+callerid="oliver"<565601>
+qualify=yes
+
+#tryinclude /root/tarefa-troncos-sip.inc
+
+EXTENSIONS.CONF
+
+[receber-chamada]
+exten => start,1,Espeak("bem vindo", any)
+        same => n,Wait(1)
+        same => n,Dial(SIP/oliver)
+        same => n,Hangup()
