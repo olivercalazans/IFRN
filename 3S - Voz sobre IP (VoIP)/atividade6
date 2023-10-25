@@ -1,0 +1,58 @@
+SIP.CONF
+
+[atv6]
+type=friend
+context=atv_6
+secret=1234
+host=dynamic
+nat=force_rpot,comedia
+directmedia=no
+callerid="meu nome"<123456>
+qualify=yes
+
+[professor]
+type=friend
+context=ate_6
+secret=voip
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid="Professor-Tel"<9999>
+
+EXTENSIONS.CONF
+
+[atv_6]
+exten => 5606,1,Answer()
+        same => n,Playback(6_menu)
+        same => n,WaitExten(10)
+
+exten => 1,1,Goto(submenu1,5606,1)
+exten => 2,1,Goto(submenu2,5606,1)
+exten => 0,1,Hangup()
+exten => i,1,Playback(6_caracterInvalido)
+        same => n,Goto(atv_6,5606,1)
+exten => t,1,Hangup()
+
+[submenu1]
+exten => 5606,1,Playback(6_sub1)
+        same => n,WaitExten(10)
+exten => 1,1,SayUnixTime(${EPOCH},"America/Fortaleza",Ad \'digits/pt-de\' B \'digits/pt-de\' YT)
+        same => n,Goto(submenu1,5606,1)
+exten => 2,1,SayDigits(${CALLERID(num)})
+        same => n,Goto(submenu1,5606,1)
+exten => 0,1,Goto(atv_6,5606,1)
+exten => i,1,Playback(6_caracterInvalido)
+        same => n,Goto(submenu1,5606,1)
+exten => t,1,Hangup()
+
+[submenu2]
+exten => 5606,1,Playback(6_sub2)
+        same => n,WaitExten(10)
+exten => 1,1,DIAL(SIP/professor)
+        same => n,Goto(submenu2,5606,1)
+exten => 2,1,DIAL(SIP/atv6)
+        same => n,Goto(submenu2,5606,1)
+exten => 0,1,Goto(atv_6,5606,1)
+exten => i,1,Playback(6_caracterInvalido)
+        same => n,Goto(submenu2,5606,1)
+exten => t,1,Hangup()
