@@ -4,3 +4,9 @@ Os arquivos contém os blocos de extenção (EXTENSIONS.CONF) e os usuários (SI
 Alguns arquivos contém modificações de outros documentos que eram necessários para a atividade.
 
 - *atividade5* - 
+
+- *atividade6* -
+
+- *atividade7* -
+
+- *atividade8* - 
