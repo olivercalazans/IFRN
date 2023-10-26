@@ -5,7 +5,7 @@ Alguns arquivos contém modificações de outros documentos que eram necessário
 
 - *atividade5* - Criação de um menu que grava uma mensagem, reproduz a mensagem gravada e reproduz o nome do usário do contêiner.
 
-- *atividade6* - 
+- *atividade6* - Atividade feita criar um menu com submenus.
 
 - *atividade7* -
 
