@@ -3,9 +3,9 @@ Abaixo estão alguns arquivos texto com as configurações do software de telefo
 Os arquivos contém os blocos de extenção (EXTENSIONS.CONF) e os usuários (SIP.CONF) criados para cada atividade.
 Alguns arquivos contém modificações de outros documentos que eram necessários para a atividade.
 
-- *atividade5* - 
+- *atividade5* - Criação de um menu que grava uma mensagem, reproduz a mensagem gravada e reproduz o nome do usário do contêiner.
 
-- *atividade6* -
+- *atividade6* - 
 
 - *atividade7* -
 
