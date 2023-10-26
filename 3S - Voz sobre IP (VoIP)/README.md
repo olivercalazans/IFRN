@@ -7,6 +7,6 @@ Alguns arquivos contém modificações de outros documentos que eram necessário
 
 - *atividade6* - Atividade feita criar um menu com submenus.
 
-- *atividade7* -
+- *atividade7* - Atividade onde foram cridados linhas para possibilitar que os contêineres possam se comunicar.
 
-- *atividade8* - 
+- *atividade8* - Criação de uma pequena central de telefonia de bancos.
