@@ -10,3 +10,5 @@ Alguns arquivos contém modificações de outros documentos que eram necessário
 - *atividade7* - Atividade onde foram cridados linhas para possibilitar que os contêineres possam se comunicar.
 
 - *atividade8* - Criação de uma pequena central de telefonia de bancos.
+
+- *atividade9* - Jogo Genius, com 2 extenções. Uma delas reproduz a média de acertos. 
