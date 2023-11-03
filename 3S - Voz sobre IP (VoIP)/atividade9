@@ -1,0 +1,81 @@
+SIP.CONF
+
+[prova]
+type=friend
+context=prova
+secret=prova
+host=dynamic
+nat=force_rpot,comedia
+directmedia=no
+callerid="oliver"<560001>
+qualify=yes
+
+#tryinclude /root/tarefa-troncos-sip.inc
+
+EXTENSIONS.CONF
+
+[prova]
+exten => ##9101,1,Answer()
+        same => n,Set(number=${EXTEN})
+        same => n,Goto(jogo,1)
+
+exten => ##9102,1,Answer()
+        same => n,Set(number=${EXTEN})
+        same => n,Goto(jogo,1)
+
+exten => jogo,1,NoOp()
+        same => n,Espeak("ola, bem vindo ao jogo genius. digite os numeros na mesma ordem que voce escutar.", any)
+
+; VARIAVEIS
+        same => n,Set(round=0)
+        same => n,Set(allNumbers=)
+        same => n,Set(numbersToSpeak=)
+        same => n,Set(userPhone=${CALLERID(num)})
+
+; INICIO DAS RODADAS
+        same => n(inicio_da_rodada),Set(round=$[${round} + 1])
+        same => n,Espeak("rodada ${round}",any)
+        same => n,Wait(1)
+        same => n,Set(randomNumber=${RAND(1,4)})
+        same => n,Set(allNumbers=${allNumbers}${randomNumber})
+        same => n,Set(numbersToSpeak=${numbersToSpeak} ${randomNumber})
+        same => n,Espeak(${numbersToSpeak})
+
+; RECEBENDO NUMEROS E VERIFICANDO SE ESTAO CORRETOS
+        same => n,Read(userInput,,${round},3)
+        same => n,GotoIf($[${allNumbers} = ${userInput}]?inicio_da_rodada)
+
+; INTRUCOES USADAS QUANDO A SEQUENCIA ESTA ERRADA OU POR DEMORA AO DIGITAR.
+        same => n,Espeak("voce errou a sequecia, a sequencia correta era ${numbersToSpeak}",any)
+        same => n,Wait(1)
+        same => n,Set(round=$[${round} - 1])
+        same => n,Espeak("voce acertou ${round} sequencias")
+        same => n,Wait(1)
+
+; EXTRAINDO DADOS DO BANCO DE DADOS PARA SEREM MODIFICADOS
+        same => n,Set(numberOfCalls=${DB(calls/${userPhone})})
+        same => n,Set(score=${DB(lastScore/${userPhone})})
+        same => n,GotoIf($[${ISNULL(${numberOfCalls})} & ${ISNULL(${score})}]?:adicao_dados)
+
+; DADOS DO PRIMEIRO JOGO
+        same => n,Set(numberOfCalls=0)
+        same => n,Set(score=0)
+
+; DADOS DO JOGADOR QUE JOGOU MAIS DE UMA VEZ
+        same => n(adicao_dados),Set(numberOfCalls=$[${numberOfCalls} + 1])
+        same => n,Set(score=$[${score} + ${round}])
+
+; CALCULANDO MEDIA
+        same => n(calculo),Set(average=${MATH(${score}/${numberOfCalls},int)})
+
+; GUADANDO DADOS ATUALIZADOs
+        same => n,Set(DB(calls/${userPhone})=${numberOfCalls})
+        same => n,Set(DB(lastScore/${userPhone})=${score})
+
+;REPRODUZINDO MEDIA SE O NUMERO DISCADO FOR ##9102
+        same => n,GotoIf($[${number} != ##9102]?saida)
+        same => n,Espeak("sua media de acertos e ${average}",any)
+        same => n,Wait(1)
+
+;FINALIZANDO A CHAMADA
+        same => n(saida),Hangup()
