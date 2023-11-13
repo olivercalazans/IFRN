@@ -1,4 +1,4 @@
-SIP.CONF
+-->> SIP.CONF
 
 [atv6]
 type=friend
@@ -19,7 +19,8 @@ nat=force_rport,comedia
 directmedia=no
 callerid="Professor-Tel"<9999>
 
-EXTENSIONS.CONF
+
+-->> EXTENSIONS.CONF
 
 [atv_6]
 exten => 5606,1,Answer()
