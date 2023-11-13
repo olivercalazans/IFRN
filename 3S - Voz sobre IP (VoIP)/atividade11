@@ -1,0 +1,69 @@
+-->> SIP.CONF
+
+[prof1]
+type=friend
+context=aula
+secret=professor
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid="prof1"<>
+qualify=yes
+
+[prof2]
+type=friend
+context=aula
+secret=professor
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid="prof2"<>
+qualify=yes
+
+[usuario1]
+type=friend
+context=aula
+secret=professor
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid=561101
+qualify=yes
+
+[usuario2]
+type=friend
+context=aula
+secret=professor
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid=561102
+qualify=yes
+
+[usuario3]
+type=friend
+context=aula
+secret=professor
+host=dynamic
+nat=force_rport,comedia
+directmedia=no
+callerid=561103
+qualify=yes
+
+
+-->> EXTENSIONS.CONF
+
+[aula]
+exten => 1100,1,Queue(fila_atv11)
+
+
+-->> QUEUES.CONF
+[fila_atv11]
+strategy= linear
+leavewhenempty= yes
+joinempty= no
+ringinuse= no
+timeout= 15
+
+member => SIP/prof1,0
+member => SIP/prof2,0
