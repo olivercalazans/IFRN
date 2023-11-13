@@ -1,4 +1,4 @@
-SIP.CONF
+-->> SIP.CONF
 
 [oliver]
 type=friend
@@ -9,7 +9,8 @@ nat=force_rport,comedia
 directmedia=no
 callerid="oliver central"<123456>
 
-EXTENSIONS.CONF
+
+-->> EXTENSIONS.CONF
 
 [menu]
 exten => 5605,1,Answer()
