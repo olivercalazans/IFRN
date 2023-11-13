@@ -15,7 +15,7 @@ qualify=yes
 
 -->> EXTENSIONS.CONF
 
-[receber-chamada]
+[aula]
 exten => start,1,Espeak("bem vindo", any)
         same => n,Wait(1)
         same => n,Dial(SIP/oliver)
