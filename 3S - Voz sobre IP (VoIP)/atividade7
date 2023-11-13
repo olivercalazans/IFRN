@@ -1,4 +1,4 @@
-SIP.CONF
+-->> SIP.CONF
 
 [oliver]
 type=friend
@@ -12,7 +12,8 @@ qualify=yes
 
 #tryinclude /root/tarefa-troncos-sip.inc
 
-EXTENSIONS.CONF
+
+-->> EXTENSIONS.CONF
 
 [receber-chamada]
 exten => start,1,Espeak("bem vindo", any)
