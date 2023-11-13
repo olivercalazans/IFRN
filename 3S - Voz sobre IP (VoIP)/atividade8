@@ -1,4 +1,4 @@
-SIP.CONF
+-->> SIP.CONF
 
 [atv8]
 type=friend
@@ -10,7 +10,8 @@ directmedia=no
 callerid="oliver"<565601>
 qualify=yes
 
-EXTENSIONS.CONF
+
+-->> EXTENSIONS.CONF
 
 [atendimentoBancos]
 exten => _0800156XXXX,1,NoOp("Atendimento chamada de ${CALLERID(dnid)}")
@@ -44,7 +45,8 @@ exten => _0800156XXXX,1,NoOp("Atendimento chamada de ${CALLERID(dnid)}")
 exten => 9797,1,VoiceMailMain(0001)
         same => n,Hangup
 
-VOICEMAIL.CONF
+
+-->> VOICEMAIL.CONF
 
 [default]
 0001 => 1234,aluno
