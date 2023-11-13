@@ -1,4 +1,4 @@
-SIP.CONF
+-->> SIP.CONF
 
 [prova]
 type=friend
@@ -12,7 +12,8 @@ qualify=yes
 
 #tryinclude /root/tarefa-troncos-sip.inc
 
-EXTENSIONS.CONF
+
+-->> EXTENSIONS.CONF
 
 [prova]
 exten => ##9101,1,Answer()
