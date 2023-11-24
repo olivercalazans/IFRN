@@ -20,3 +20,5 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 - *positivo_negativo_nulo.sh* - Recebe um número e diz se é positivo, negativo ou nulo.
 
 - *verificador_arquivo_diretorio.sh* - Recebe uma string como caminho e verifica se existe um arquivo ou diretório com esse nome.
+
+- *verificando_usuarios.sh* - Verifica se um usuário existe e lista os usuarios logados.
