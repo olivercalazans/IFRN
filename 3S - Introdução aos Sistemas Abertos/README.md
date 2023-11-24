@@ -1,7 +1,7 @@
 # INTRODUÇÃO AOS SISTEMAS ABERTOS (LINUX)
 Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhecimentos em Linux.
 
-- *atividade1.sh* --> Script de uma atividade sobre criação e manipulação de arquivos e diretórios.
+- *atividade1.sh* - Script de uma atividade sobre criação e manipulação de arquivos e diretórios.
 
 - *comparando_numeros.sh* - Compara dois números e diz qual é maior, menor ou se são iguais.
 
