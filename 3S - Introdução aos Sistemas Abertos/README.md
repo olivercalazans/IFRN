@@ -22,3 +22,5 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 - *verificador_arquivo_diretorio.sh* - Recebe uma string como caminho e verifica se existe um arquivo ou diretório com esse nome.
 
 - *verificando_usuarios.sh* - Verifica se um usuário existe e lista os usuarios logados.
+
+- *visualizando_usuarios_ssh.sh* - Da um echo detalhando informações dos usuários que estão usando SSH.
