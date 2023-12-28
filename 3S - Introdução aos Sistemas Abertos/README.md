@@ -9,6 +9,8 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 
 - *criador_de_arquivo.sh* - Script que cria um arquivo vazio com as permições 711.
 
+- *escrevendo_iptables.sh* - Adiciona um IP ao iptables e permite o roteamento pela maquina.
+
 - *escrevendo_no_ultimo_arquivo.sh* - Recebe uma string que é adicionada ao último arquivo criado, caso tenha permissão.
 
 - *imc.sh* - Script que faz o cálculo do IMC e devolve o resultado e o "status".
