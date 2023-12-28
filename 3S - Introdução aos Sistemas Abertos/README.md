@@ -19,6 +19,8 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 
 - *positivo_negativo_nulo.sh* - Recebe um número e diz se é positivo, negativo ou nulo.
 
+- *userinfo_v2.sh* - Lista todos os usuários SSH e suas informações.
+
 - *userinfo_v3.sh* - Cria um arquivo que informa a quantidade de usuários e porcentagem de recursos usados.
 
 - *verificador_arquivo_diretorio.sh* - Recebe uma string como caminho e verifica se existe um arquivo ou diretório com esse nome.
