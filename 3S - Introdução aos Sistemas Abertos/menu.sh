@@ -66,7 +66,12 @@ while true; do
             done
             ;;
         "2")
-            echo "Opção 2"
+            clear
+            echo 'Estatistica de uso da partição /'
+            echo
+            echo "Tamanho Total..: $(df | grep sda1 | awk '{print $2}')"
+            echo "Total utilizado: $(df | grep sda1 | awk '{print $5}')"
+            sleep $sleep_longo
             ;;
         "0")
             echo -e "\nSaindo..."
