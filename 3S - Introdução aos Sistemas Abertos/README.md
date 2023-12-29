@@ -17,6 +17,8 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 
 - *media_escolar.sh* - Script que recebe as notas e devolve a média e a situação.
 
+- *menu.sh* - ATIVIDADE FINAL, menu com opções de vizualizar algumas informações do sistema.
+
 - *porcentagem_votos.sh* - Script que recebe a quantidade de votos válidos, brancos e nulos e devolve a porcentagem.
 
 - *positivo_negativo_nulo.sh* - Recebe um número e diz se é positivo, negativo ou nulo.
