@@ -65,7 +65,7 @@ for programa in `cat $caminho_do_arquivo_de_programas`; do
 	if [ -f $programa ]; then
 		echo "    -> Programa encontrado: $programa" | tee -a $arquivo_de_log
 		echo "          -> Removendo programa..." | tee -a $arquivo_de_log
-		apt-get remove $programa
+		apt-get remove $programa &>/dev/null
 	fi
 done
 
