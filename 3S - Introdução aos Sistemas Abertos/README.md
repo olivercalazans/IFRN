@@ -13,6 +13,8 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 
 - *escrevendo_no_ultimo_arquivo.sh* - Recebe uma string que é adicionada ao último arquivo criado, caso tenha permissão.
 
+- *hardening.sh* - Script de hardening simples de sistema.
+
 - *imc.sh* - Script que faz o cálculo do IMC e devolve o resultado e o "status".
 
 - *media_escolar.sh* - Script que recebe as notas e devolve a média e a situação.
