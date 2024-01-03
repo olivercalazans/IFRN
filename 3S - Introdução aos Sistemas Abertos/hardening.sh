@@ -18,21 +18,22 @@ fi
 
 
 # B) Habilitando o NTP(Network Time Protocol) -----------------
-echo 'Configurand NTP...' | tee -a $arquivo_de_log
-echo 'Agendando tarefa' | tee -a $arquivo_de_log
+echo 'Configurando NTP...' | tee -a $arquivo_de_log
+apt-get install ntp &>/dev/null 2>>$arquivo_de_log
 
-comando_encontrado='false'
+echo 'Agendando sincronização' | tee -a $arquivo_de_log
+sincronizacao_encontrada='false'
 for linha in `crontab -l`; do
-	if [[ $linha == '0 1 * * * /root/hardening.sh' ]]; then
-		echo '    -> A tarefa já foi agendada' | tee -a $arquivo_de_log
-		comando_encontrado='true'
+	if [[ $linha == '0 1 * * * /etc/init.d/ntp restart' ]]; then
+		echo '    -> A sincronização já foi agendada' | tee -a $arquivo_de_log
+		sincronizacao_encontrada='true'
 		break
 	fi
 done
 
-if [[ $comando_encontrado == 'false' ]]; then
-	(crontab -l 2> /dev/null; echo "0 1 * * * /root/hardening.sh") | crontab -
-	echo '    -> Tarefa agendada com sucesso' | tee -a $arquivo_de_log
+if [[ $sincronizacao_encontrada == 'false' ]]; then
+	(crontab -l 2> /dev/null; echo "0 1 * * * /etc/init.d/ntp restart") | crontab -
+	echo '    -> Sincronização agendada com sucesso' | tee -a $arquivo_de_log
 fi
 
 echo 'Concluído' | tee -a $arquivo_de_log
@@ -88,7 +89,25 @@ for linha in `cat $arquivo_de_usuarios`; do
 done
 
 
-# F) Informações passadas ao arquivo "scanner.log"
+# F) Informações passadas ao arquivo "scanner.log" já foram feitas durante a execução de cada parte.
+
+
+# *SSS) Agendando execução desse script
+echo "Agendando execução desse script..." | tee -a $arquivo_de_log
+execucao_agendada='false'
+caminho_para_hardening=$(find / -name hardening.sh)
+for linha in `crontab -l`; do
+        if [[ $linha == "0 2 * * * $caminho_para_hardening" ]]; then
+                echo '    -> A execução já foi agendada' | tee -a $arquivo_de_log
+                execucao_agendada='true'
+                break
+        fi
+done
+
+if [[ $execucao_agendada == 'false' ]]; then
+        (crontab -l 2> /dev/null; echo "0 2 * * * $caminho_para_hardening") | crontab -
+        echo '    -> Execução agendada com sucesso' | tee -a $arquivo_de_log
+fi
 
 
 # G) Informações do sistema
