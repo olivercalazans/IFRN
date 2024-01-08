@@ -25,6 +25,8 @@ Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhec
 
 - *positivo_negativo_nulo.sh* - Recebe um número e diz se é positivo, negativo ou nulo.
 
+- *prova_bimestre_II.sh* - Mostra informações resumidas das interfaces de rede e SSH.
+
 - *userinfo_v2.sh* - Lista todos os usuários SSH e suas informações.
 
 - *userinfo_v3.sh* - Cria um arquivo que informa a quantidade de usuários e porcentagem de recursos usados.
