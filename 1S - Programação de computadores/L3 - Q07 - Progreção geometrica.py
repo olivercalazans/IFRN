@@ -1,6 +1,6 @@
 inicial = int(input('Informe o valor inicial: '))
 razao = int(input('Informe o valor da razão: '))
-quantidade = int(input('Informe o a quantidade de números: '))
+quantidade = int(input('Informe a quantidade de números: '))
 posicao = int(input('Informe a posição do valor que deseja: '))
 
 if inicial == 0 or razao == 0 or quantidade == 0 or posicao == 0:
