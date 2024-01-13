@@ -10,7 +10,7 @@ elif imc >= 35:
 elif imc >= 30:
     print(f'Seu IMC é {imc:.1f}. Classificação: OBESIDADE GRAU I.')
 elif imc >= 25:
-    print(f'Seu IMC é {imc:.1f}. Classificação: OBESIDADE GRAU III OU MÓRBIDA.')
+    print(f'Seu IMC é {imc:.1f}. Classificação: SOBREPESO.')
 elif imc >= 18.5:
     print(f'Seu IMC é {imc:.1f}. Classificação: PESO NORMAL.')
 else:
