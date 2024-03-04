@@ -1,0 +1,30 @@
+## /var/named/filho.container20.ifrn.local.zone ##
+
+$TTL 10
+$ORIGIN filho.container20.ifrn.local.
+@       IN SOA ns root (
+        20240201        ; SERIAL...: numero de serie usado para verificar modificamodificacoes no arquivo.
+        60              ; REFRESH..: tempo que os slaves levam pra verificar atualizacoes.
+        15              ; RETRY....: tempo que os slaves esperam para tentar uma nova vericacao caso o refresh$
+        1w              ; EXPIRE...: tempo maximo que o secundario mantem seu arquivo.
+        60)             ; NEG. CASH: tempo que o cash mantem uma informacao sobre uma respossta negativa.
+
+        IN NS   ns
+        IN A    192.168.102.120
+        IN MX 0 mail
+
+ns      IN A    192.168.102.120
+www     IN A    192.168.102.120
+mail    IN A    192.168.102.120
+ftp     IN CNAME        www
+
+
+
+## /etc/named.conf ##
+
+zone "filho.container20.ifrn.local" IN {
+        type master;
+        file "filho.container20.ifrn.local.zone";
+        allow-transfer { any; };
+        allow-query { any; };
+};
