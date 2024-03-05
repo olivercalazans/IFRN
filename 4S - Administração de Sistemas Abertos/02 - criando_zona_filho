@@ -27,7 +27,7 @@ zone "filho.container20.ifrn.local" IN {
 
 
 
-## /var/named/container20.ifrn.local (MODIFICADO) ## -----------------------------------------------------------------------
+## /var/named/container20.ifrn.local (MODIFICADO) ## -------------------------------------------------------------------------
 
 $TTL 10
 $ORIGIN container20.ifrn.local.
