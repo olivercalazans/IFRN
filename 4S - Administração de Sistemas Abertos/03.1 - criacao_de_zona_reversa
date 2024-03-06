@@ -1,0 +1,29 @@
+## /var/named/10.in-addr.arpa.zone ##
+
+$TTL 10
+$ORIGIN 10.in-addr.arpa.
+
+@       IN      SOA     container20.ifrn.local. root.container20.ifrn.local. (
+                20240306
+                28800
+                14400
+                3600000
+                10 )
+
+
+        IN      NS      container20.ifrn.local.
+
+1.2.1   IN      PTR     container01.ifrn.local.
+2.2.1   IN      PTR     container02.ifrn.local.
+3.2.1   IN      PTR     container03.ifrn.local.
+
+
+
+## /etc/named.conf (MODIFICADO) ##
+
+zone "10.in-addr.arpa" IN {
+        type master;
+        file "10.in-addr.arpa.zone";
+        allow-transfer { any; };
+        allow-query { any;};
+};
