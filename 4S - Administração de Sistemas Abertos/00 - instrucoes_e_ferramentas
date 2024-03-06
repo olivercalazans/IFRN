@@ -1,0 +1,3 @@
+# RECAREGAR O BIND.........: rndc reload
+# VERIFICAR LOGS...........: tail -1000 /var/log/messages | grep "named"
+# VERIFICAR PROCESSOS......: ps -ef | grep "named"
