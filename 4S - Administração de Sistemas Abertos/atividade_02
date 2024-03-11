@@ -1,0 +1,69 @@
+##### /var/named/atv_02.zone ---------------------------------------------------
+
+$TTL 10
+$ORIGIN c20.ifrn.local.
+@       IN      SOA     ns      root    (
+        2024031000
+        60
+        15
+        1w
+        60      )
+
+        IN      NS      ns
+        IN      A       192.168.102.120
+        IN      MX  0   mail
+
+filho   IN      NS      c11.ifrn.local.
+
+ns      IN      A       192.168.102.120
+www     IN      A       192.168.102.120
+mail    IN      A       192.168.102.120
+ftp     IN      CNAME   www
+
+admin   IN      TXT     "admin@c20.ifrn.local"
+
+
+##### /var/named/filho.atv_02.zone --------------------------------------------
+
+$TTL 10
+$ORIGIN filho.c11.ifrn.local.
+@       IN      SOA     ns.c20.ifrn.local.      root.c20.ifrn.local.    (
+        2024031000
+        60
+        15
+        1w
+        60      )
+
+        IN      NS      ns
+        IN      A       192.168.102.120
+        IN      MX  0   mail
+
+ns      IN      A       192.168.102.111
+www     IN      A       192.168.102.111
+mail    IN      A       192.168.102.111
+ftp     IN      CNAME   www
+
+admin   IN      TXT     "admin@c11.ifrn.local"
+
+
+##### /etc/named.conf --------------------------------------------------------
+
+zone "c20.ifrn.local" IN {
+        type master;
+        file "atv_02.zone";
+        allow-transfer { any; };
+        allow-query { any; };
+};
+
+zone "filho.c11.ifrn.local" IN {
+        type master;
+        file "filho.atv_02.zone";
+        allow-transfer { any; };
+        allow-query { any; };
+};
+
+zone "oculta.ifrn.local" IN {
+        type slave;
+        file "slaves/oculta.ifrn.local.dns";
+        masters { 192.168.102.104; };
+};
