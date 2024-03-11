@@ -1,3 +1,4 @@
 # RECAREGAR O BIND.........: rndc reload
+# APAGAR CACHE.............: rnde flush
 # VERIFICAR LOGS...........: tail -1000 /var/log/messages | grep "named"
 # VERIFICAR PROCESSOS......: ps -ef | grep "named"
