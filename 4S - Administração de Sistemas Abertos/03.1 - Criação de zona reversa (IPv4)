@@ -1,4 +1,4 @@
-## /var/named/10.in-addr.arpa.zone ##
+## /var/named/10.in-addr.arpa.zone ## ----------------------------------------------------------
 
 $TTL 10
 $ORIGIN 10.in-addr.arpa.
@@ -19,7 +19,7 @@ $ORIGIN 10.in-addr.arpa.
 
 
 
-## /etc/named.conf (MODIFICADO) ##
+## /etc/named.conf (MODIFICADO) ## -----------------------------------------------------------
 
 zone "10.in-addr.arpa" IN {
         type master;
