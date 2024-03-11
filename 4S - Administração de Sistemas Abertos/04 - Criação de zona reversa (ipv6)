@@ -1,0 +1,23 @@
+##### /var/named/ip6.zone -------------------------------------------------------------------------
+
+$TTL 10
+$ORIGIN 0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.9.9.0.0.f.1.d.f.ip6.arpa.
+@       IN      SOA     ns.container20.ifrn.local.      root.container20.ifrn.local.    (
+                2024031101
+                1H
+                15M
+                2H
+                10      )
+
+        IN      NS      container20.ifrn.local.
+
+0.0.1.0         IN      PTR     container100.ifrn.local.
+
+
+
+##### /etc/named.conf --------------------------------------------------------------------------
+
+zone "0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.9.9.0.0.f.1.d.f.ip6.arpa" IN {
+        type master;
+        file "ip6.zone";
+};
