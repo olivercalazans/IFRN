@@ -1,0 +1,13 @@
+##### /etc/named.conf -----------------------------------------------------------------------------------
+
+zone "104.168.192.in-addr.arpa" IN {
+        type slave;
+        file "slaves/db.104.168.192";
+        masters { 192.168.104.100; };
+};
+
+zone "f.1.e.f.f.f.c.c.b.b.8.a.0.0.0.0.0.0.0.0.0.0.0.0.0.8.e.f.ip6.arpa" IN {
+        type slave;
+        file "slaves/db.atv3.ip6";
+        masters { fd1f:20::100; };
+};
