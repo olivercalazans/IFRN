@@ -1,0 +1,49 @@
+### /var/named/primos.ifrn.local.zone ----------------------------
+
+$TTL 10
+$ORIGIN primos.ifrn.local.
+@       IN      SOA     ns      root (
+        2024032501      ; SERIAL...: numero de serie usado para verificar modifi$
+        60              ; REFRESH..: tempo que os slaves levam pra verificar atu$
+        15              ; RETRY....: tempo que os slaves esperam para tentar uma$
+        1w              ; EXPIRE...: tempo maximo que o secundario mantem seu ar$
+        60)             ; NEG. CASH: tempo que o cash mantem uma informacao sobr$
+
+        IN NS   ns
+        IN A    192.168.102.120
+        IN MX 0 mail
+
+ns      IN A    192.168.102.120
+www     IN A    192.168.102.120
+
+
+
+### /etc/named.conf ----------------------------------------------
+
+zone "primos.ifrn.local" IN {
+        type master;
+        file "primos.ifrn.local.zone";
+};
+
+
+
+### /etc/httpd/conf/httpd.conf ----------------------------------
+
+<VirtualHost 192.168.102.120:80>
+    <Directory /var/www/html>
+        AllowOverride all
+        Require all Granted
+        Options Indexes
+    </Directory>
+     ServerAdmin root@primos.ifrn.local
+     DocumentRoot "/var/www/html"
+     ServerName www.primos.ifrn.local
+     ErrorLog  "/var/www/log/error.log"
+     CustomLog "/var/www/log/access.log" common
+</VirtualHost>
+
+
+
+### /var/www/html/index.html ------------------------------------
+
+Esse eh a pagina "primos.ifrn.local"
