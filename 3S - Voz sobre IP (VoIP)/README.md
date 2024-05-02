@@ -1,4 +1,4 @@
-VOICE OVER IP (VoIP)
+# VOICE OVER IP (VoIP)
 
 Below are some text files containing configurations for the Asterisk telephony software.
 The files contain blocks of extensions (EXTENSIONS.CONF) and users (SIP.CONF) created for each activity.
