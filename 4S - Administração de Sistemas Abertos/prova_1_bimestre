@@ -1,0 +1,184 @@
+### /var/named/pai.zone -----------------------------------------------------
+
+$TTL 30
+$ORIGIN ip6-20.local.
+@       IN      SOA     nameserver1     admin   (
+                2024040205
+                2M
+                1M
+                5M
+                30      )
+
+                IN      AAAA    FD1F:FF::20
+                IN      NS      nameserver1
+                IN      MX   0  mail1
+
+                IN      NS      nameserver2
+                IN      MX   5  mail2
+
+nameserver1     IN      AAAA    FD1F:FF::20
+mail1           IN      AAAA    FD1F:FF::20
+www             IN      CNAME   @
+
+nameserver2     IN      AAAA    FD1F:FF::4
+mail2           IN      AAAA    FD1F:FF::4
+
+root            IN      TXT     admin.ip6-20.local
+
+f1              IN      NS      ns1.f1
+f1              IN      NS      ns2.f1
+
+f2              IN      NS      ns1.f2
+
+
+
+### /var/named/f1.zone ----------------------------------------------------------
+
+$TTL 30
+$ORIGIN f1.ip6-20.local.
+@       IN      SOA     ns1     admin   (
+                2024041200
+                2M
+                1M
+                5M
+                30      )
+
+                IN      AAAA    FD1F:FF::20
+                IN      NS      ns1
+                IN      MX   0  m1
+
+                IN      NS      ns2
+                IN      MX   5  m2
+
+www             IN      CNAME   @
+
+ns1             IN      AAAA    FD1F:FF::20
+m1              IN      AAAA    FD1F:FF::20
+
+ns2             IN      AAAA    FD1F:FF::4
+m2              IN      AAAA    FD1F:FF::4
+
+root            IN      TXT     admin.f1.ip6-20.local
+
+
+
+### /var/named/f2.zone ----------------------------------------------------------
+
+$TTL 30
+$ORIGIN f2.ip6-20.local.
+@       IN      SOA     ns1     admin   (
+                2024041200
+                2M
+                1M
+                5M
+                30      )
+
+                IN      AAAA    FD1F:FF::20
+                IN      NS      ns1
+                IN      MX   0  m1
+
+                IN      NS      ns2
+                IN      MX   5  m2
+
+www             IN      CNAME   @
+
+ns1             IN      AAAA    FD1F:FF::20
+m1              IN      AAAA    FD1F:FF::20
+
+ns2             IN      AAAA    FD1F:FF::4
+m2              IN      AAAA    FD1F:FF::4
+
+root            IN      TXT     admin.f2.ip6-20.local
+
+
+
+### /etc/named.conf ------------------------------------------------------
+
+zone "ip6-20.local" IN {
+        type master;
+        file "pai.zone";
+        notify yes;
+        allow-update { none; };
+        allow-transfer { FD1F:FF::04; };
+        allow-query { any; };
+};
+
+zone "f1.ip6-20.local" IN {
+        type master;
+        file "f1.zone";
+        notify yes;
+        allow-update { none; };
+        allow-transfer { FD1F:FF::4; };
+        allow-query { any; };
+};
+
+zone "f2.ip6-20.local" IN {
+        type master;
+        file "f2.zone";
+        notify yes;
+        allow-update { none; };
+};
+
+
+
+### /etc/httpd/conf/httpd.conf ----------------------------------------------------------------
+
+<VirtualHost [FD1F:FF::20]:80>
+    DocumentRoot "/parcial1/ip6-20.local/www"
+    ServerName www.ip6-20.local
+    CustomLog "/parcial1/ip6-20.local/logs/acessos.log" common
+    ErrorLog "/parcial1/ip6-20.local/logs/erros.log"
+    <Directory "/parcial1/ip6-20.local/www">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+        DirectoryIndex pai.html
+    </Directory>
+</VirtualHost>
+
+<VirtualHost [FD1F:FF::20]:80>
+    ServerName www.f1.ip6-20.local
+    DocumentRoot "/parcial1/ip6-20.local/f1/www"
+    CustomLog "/parcial1/ip6-20.local/f1/logs/acessos.log" common
+    ErrorLog "/parcial1/ip6-20.local/f1/logs/erros.log"
+    <Directory "/parcial1/ip6-20.local/f1">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+        DirectoryIndex index.html
+    </Directory>
+</VirtualHost>
+
+<VirtualHost [FD1F:FF::20]:80>
+    ServerName www.f2.ip6-20.local
+    DocumentRoot "/parcial1/ip6-20.local/f2/www"
+    CustomLog "/parcial1/ip6-20.local/f2/logs/acessos.log" common
+    ErrorLog "/parcial1/ip6-20.local/f2/logs/erros.log"
+    <Directory "/parcial1/ip6-20.local/f2">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+        DirectoryIndex index.html
+    </Directory>
+</VirtualHost>
+
+
+
+### /parcial1/ip6-20.local/f1/.htaccess -----------------------------------------------------
+
+Options +Indexes
+DirectoryIndex index.html
+
+AuthType Basic
+AuthName "ACESSO RESTRITO"
+AuthBasicProvider file
+AuthUserFile  "/parcial1/seguranca/usuarios"
+AuthGroupFile "/parcial1/seguranca/grupos"
+
+<RequireAny>
+    Require ip FD1F:FF::04
+        <RequireAll>
+            Require ip FD1F:FF::08 FD1F:FF::20
+            Require group admin
+        </RequireAll>
+</RequireAny>
