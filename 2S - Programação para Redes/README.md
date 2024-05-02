@@ -1,17 +1,14 @@
-# PROGRAMAÇÃO PARA REDES
-Essa pasta contém projetos e atividades que desenvolvi para a disciplina de programação para redes de computadores.
-Abaixo está uma breve descrição do que cada código faz. Dentro do código/pasta há uma descrição mais detalhada.
+# NETWORK PROGRAMMING
 
-- **client_server.py** - Dois códigos, cliente e servidor, onde o cliente faz o pedido de uma imagem e o servidor envia.
+This folder contains projects and activities I developed for the computer network programming course.
+Below is a brief description of what each code does. Inside the code/folder, there is a more detailed description.
 
-- **alunos_ifrn.py** -
-     Esse código faz uma requisição ao IFRN de todos os campis e seus dados. Com esses dados, ele faz uma lista de de todos os campis com a quantidade de cursos que cada um possui.
-     Além disso, se for escolhido um campi, é feito uma lista de todos os cursos desse campi com a quantidade de alunos por curso. Se desejar, ele cria um arquivo com os dados do campi escolhido.
+- **client_server.py** - Two codes, client and server, where the client requests an image and the server sends it.
+
+- **alunos_ifrn.py** - This code makes a request to IFRN for data on all campuses and their details. With this data, it creates a list of all campuses with the number of courses each one has. Additionally, if a campus is chosen, it creates a list of all courses at that campus with the number of students per course. If desired, it creates a file with the data of the chosen campus.
      
-- **eleicoes.py** -
-     Esse código faz uma requisição ao TSE dos dados da eleição, do ano que for escolhido, e faz uma lista com os dados dos candidatos. É possível salvar um arquivo com esses dados.
+- **eleicoes.py** - This code makes a request to TSE for election data from the chosen year and creates a list with the candidate data. It's possible to save a file with this data.
 
-- **socket_imagem.py** -
-     Esse código faz o download de uma imagem ou pdf a partir da URL informada, e salva os dados do header em um arquivo.
-- **servidor_multifunc.py** -
-     Um servidor que tem várias funções como chat, download/upload de arquivos, etc.
+- **socket_imagem.py** - This code downloads an image or PDF from the provided URL and saves the header data into a file.  
+
+- **servidor_multifunc.py** - A server that has various functions such as chat, file download/upload, etc.
