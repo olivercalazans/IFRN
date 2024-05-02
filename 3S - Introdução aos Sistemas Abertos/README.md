@@ -1,38 +1,38 @@
-# INTRODUÇÃO AOS SISTEMAS ABERTOS (LINUX)
-Abaixo estão alguns scripts que fiz enquantos estudava e aprimorava meus conhecimentos em Linux.
+# INTRODUCTION TO OPEN SYSTEMS (LINUX)
+Below are some scripts I made while studying and improving my knowledge in Linux.
 
-- *adicinando_usuario.sh* - Adiciona um usuário comum sem senha.
+- *adicinando_usuario.sh* - Adds a regular user without a password.
 
-- *atividade1.sh* - Script de uma atividade sobre criação e manipulação de arquivos e diretórios.
+- *atividade1.sh* - Script for an activity on creating and manipulating files and directories.
 
-- *comparando_numeros.sh* - Compara dois números e diz qual é maior, menor ou se são iguais.
+- *comparando_numeros.sh* - Compares two numbers and indicates which one is greater, which one is smaller, or if they are equal.
 
-- *criador_de_arquivo.sh* - Script que cria um arquivo vazio com as permições 711.
+- *criador_de_arquivo.sh* - Script that creates an empty file with permissions 711.
 
-- *escrevendo_iptables.sh* - Adiciona um IP ao iptables e permite o roteamento pela maquina.
+- *escrevendo_iptables.sh* - Adds an IP to iptables and allows routing through the machine.
 
-- *escrevendo_no_ultimo_arquivo.sh* - Recebe uma string que é adicionada ao último arquivo criado, caso tenha permissão.
+- *escrevendo_no_ultimo_arquivo.sh* - Receives a string that is appended to the last created file, if permission allows.
 
-- *hardening.sh* - Script de hardening simples de sistema.
+- *hardening.sh* - Simple system hardening script.
 
-- *imc.sh* - Script que faz o cálculo do IMC e devolve o resultado e o "status".
+- *imc.sh* - Script that calculates the BMI (Body Mass Index) and returns the result along with the status.
+  
+- *media_escolar.sh* - Script that receives grades and returns the average and the situation.
+  
+- *menu.sh* - FINAL EXAM: Menu with options to view some system information.
 
-- *media_escolar.sh* - Script que recebe as notas e devolve a média e a situação.
+- *porcentagem_votos.sh* - Script that receives the number of valid, blank, and null votes and returns the percentage.
 
-- *menu.sh* - ATIVIDADE FINAL, menu com opções de vizualizar algumas informações do sistema.
+- *positivo_negativo_nulo.sh* - Receives a number and determines if it is positive, negative, or zero.
 
-- *porcentagem_votos.sh* - Script que recebe a quantidade de votos válidos, brancos e nulos e devolve a porcentagem.
+- *prova_bimestre_II.sh* - Displays summarized information about network interfaces and SSH.
 
-- *positivo_negativo_nulo.sh* - Recebe um número e diz se é positivo, negativo ou nulo.
+- *userinfo_v2.sh* - Lists all SSH users and their information.
 
-- *prova_bimestre_II.sh* - Mostra informações resumidas das interfaces de rede e SSH.
+- *userinfo_v3.sh* - Creates a file that reports the number of users and the percentage of resources used.
 
-- *userinfo_v2.sh* - Lista todos os usuários SSH e suas informações.
+- *verificador_arquivo_diretorio.sh* - Receives a string as a path and checks if a file or directory with that name exists.
+  
+- *verificando_usuarios.sh* - Checks if a user exists and lists logged-in users.
 
-- *userinfo_v3.sh* - Cria um arquivo que informa a quantidade de usuários e porcentagem de recursos usados.
-
-- *verificador_arquivo_diretorio.sh* - Recebe uma string como caminho e verifica se existe um arquivo ou diretório com esse nome.
-
-- *verificando_usuarios.sh* - Verifica se um usuário existe e lista os usuarios logados.
-
-- *visualizando_usuarios_ssh.sh* - Da um echo detalhando informações dos usuários que estão usando SSH.
+- *visualizando_usuarios_ssh.sh* - Echoes details about users who are using SSH.
