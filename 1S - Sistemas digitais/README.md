@@ -1,8 +1,6 @@
-# SISTEMAS DIGITAIS
+# DIGITAL SYSTEMS
 
-Esses projetos foram feitos em um simulador de protoboard.
+These projects were done in a protoboard simulator.
 
-- Para testar os projetos é **necessário baixar o simulador** (ConstructorVirtualDeCircuitos.exe).
-- Os projetos se encontram em formato txt pois o simulador gera os arquivos nesse formato.
-
-Uma descrição será feita aqui sobre cada projeto.
+- To test the projects, **it is necessary to download the simulator** (ConstructorVirtualDeCircuitos.exe).
+- The projects are in TXT format because the simulator generates files in this format.
