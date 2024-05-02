@@ -1,16 +1,17 @@
-# VOZ SOBRE IP (VoIP)
-Abaixo estão alguns arquivos texto com as configurações do software de telefonia Asterisk.
-Os arquivos contém os blocos de extenção (EXTENSIONS.CONF) e os usuários (SIP.CONF) criados para cada atividade.
-Alguns arquivos contém modificações de outros documentos que eram necessários para a atividade.
+VOICE OVER IP (VoIP)
 
-- *atividade05* - Criação de um menu que grava uma mensagem, reproduz a mensagem gravada e reproduz o nome do usário do contêiner.
+Below are some text files containing configurations for the Asterisk telephony software.
+The files contain blocks of extensions (EXTENSIONS.CONF) and users (SIP.CONF) created for each activity.
+Some files contain modifications from other documents that were necessary for the activity.
 
-- *atividade06* - Atividade feita criar um menu com submenus.
 
-- *atividade07* - Atividade onde foram cridados linhas para possibilitar que os contêineres possam se comunicar.
+- *atividade05* - Creation of a menu that records a message, plays the recorded message, and plays the username of the container user.
+- *atividade06* - Creating a menu with submenus.
 
-- *atividade08* - Criação de uma pequena central de telefonia de bancos.
+- *atividade07* - Activity where lines were created to enable communication between containers.
 
-- *atividade09* - Jogo Genius, com 2 extenções. Uma delas reproduz a média de acertos. 
+- *atividade08* - Creation of a small bank telephony center.
 
-- *atividade11* - Crianção de fila linear para teste.
+- *atividade09* - Genius game with 2 extensions. One of them plays the average accuracy.
+  
+- *atividade11* - Creation of a linear queue for testing.
