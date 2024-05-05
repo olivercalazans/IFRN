@@ -1,4 +1,10 @@
+##### DNS
+
 # RECAREGAR O BIND.........: rndc reload
 # APAGAR CACHE.............: rnde flush
 # VERIFICAR LOGS...........: tail -1000 /var/log/messages | grep "named"
 # VERIFICAR PROCESSOS......: ps -ef | grep "named"
+
+##### BANCO DE DADOS
+
+# ACESSO: mysql -u containerNN -p -h 192.168.102.100
