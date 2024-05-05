@@ -1,9 +1,16 @@
 ##### DNS
 
+# ARQUIVO DE CONFIGURAÇÃO..: /etc/named.conf
+# PASTA DE ARQUIVOS DE ZONA: /var/named/
 # RECAREGAR O BIND.........: rndc reload
 # APAGAR CACHE.............: rnde flush
 # VERIFICAR LOGS...........: tail -1000 /var/log/messages | grep "named"
 # VERIFICAR PROCESSOS......: ps -ef | grep "named"
+
+##### APACHE
+
+# ARQUIVO DE CONFIGURAÇÃO..: /etc/httpd/conf/httpd.conf
+# RECARREGAR O APACHE......: apachectl reload
 
 ##### BANCO DE DADOS
 
