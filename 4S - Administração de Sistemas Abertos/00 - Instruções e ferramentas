@@ -1,5 +1,5 @@
 ##### DNS
-
+#
 # ARQUIVO DE CONFIGURAÇÃO..: /etc/named.conf
 # PASTA DE ARQUIVOS DE ZONA: /var/named/
 # RECAREGAR O BIND.........: rndc reload
@@ -7,11 +7,18 @@
 # VERIFICAR LOGS...........: tail -1000 /var/log/messages | grep "named"
 # VERIFICAR PROCESSOS......: ps -ef | grep "named"
 
-##### APACHE
 
+##### APACHE
+#
 # ARQUIVO DE CONFIGURAÇÃO..: /etc/httpd/conf/httpd.conf
 # RECARREGAR O APACHE......: apachectl reload
 
-##### BANCO DE DADOS
 
+##### BANCO DE DADOS
+#
 # ACESSO: mysql -u containerNN -p -h 192.168.102.100
+
+
+##### DOVECOT
+#
+# LOGS: /var/log/maillog
