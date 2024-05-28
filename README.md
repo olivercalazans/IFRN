@@ -1,4 +1,4 @@
 # IFRN
-Esse repositório expõe alguns projetos que fiz em algumas das diciplinas do curso de tecnologia em redes de computadores do IFRN.
+This repository showcases some projects I completed in various courses of the Computer Networks Technology program at IFRN.
 
-Cada pasta começa com o número do semestre e o nome da diciplina.  (Ex.: 1S = 1° Semestre)
+Each folder begins with the semester number and the course name. (e.g., 1S = 1st Semester)
