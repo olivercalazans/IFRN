@@ -2,8 +2,6 @@ import socket, threading, sys, requests, os, datetime, math, ssl
 from chave_api import API_KEY
 from googlesearch import search
 
-# resolver o problema de colocar a mensagem no lugar do endereço.
-
 # ================================= ÁREA DE CONSTANTES ================================================
 
 SMALL_BUFFER = 1024
