@@ -1,7 +1,5 @@
 import socket, sys, os, time, threading, datetime
 
-# lista de arquivos
-
 # ================================ ÁREA DE CONSTANTES ==================================
 SMALL_BF  = 1024
 BIG_BF    = 10240
