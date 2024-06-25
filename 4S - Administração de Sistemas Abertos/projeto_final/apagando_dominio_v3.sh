@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-SENHA="1F(986934)"
+SENHA=""
 
 MYSQL="mysql -h 192.168.102.100 -u container20 -p"$SENHA" -D BD20 -e"
 LISTA_DOMINIOS="$($MYSQL 'SELECT domain FROM domains;')"
