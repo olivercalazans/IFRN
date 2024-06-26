@@ -36,6 +36,8 @@ LINHA_INICIAL=$(grep -n "$DOMINIO" /var/projeto-asa/dns/named.conf.projeto  | aw
 LINHA_FINAL=$(( LINHA_INICIAL + 5 ))
 LINHAS="$LINHA_INICIAL,$LINHA_FINAL"d
 sed "$LINHAS" /var/projeto-asa/dns/named.conf.projeto > temp && mv temp /var/projeto-asa/dns/named.conf.projeto
+chgrp apache /var/projeto-asa/dns/named.conf.projeto
+chown apache /var/projeto-asa/dns/named.conf.projeto
 
 
 fi
