@@ -28,6 +28,7 @@ CAMINHO_ARQUIVOS="/var/projeto-asa/dns/arquivos_de_zona/$ARQUIVO_DOMINIO"
 ### CRIACAO DO ARQUIVO DE ZONA ---------------------------------
 
 SERIAL=$(date +"%Y%m%d")00
+WWW="www.$DOMINIO"
 MAIL="mail.$DOMINIO"
 FTP="ftp.$DOMINIO"
 
@@ -44,8 +45,10 @@ echo -e '$TTL 30\n'\
 "               IN      NS      $DOMINIO\n"\
 "               IN      MX  5   $MAIL\n"\
 '\n'\
-"$MAIL          IN      A       $IP\n"\
-"$FTP           IN      CNAME   @" > $CAMINHO_ARQUIVOS
+"$WWW                   IN      CNAME   @\n"\
+"$MAIL                  IN      A       $IP\n"\
+"$FTP                   IN      A       $IP" > $CAMINHO_ARQUIVOS
+
 
 
 ### CRIACAO DAS CONFIGURACOES DE ZONA --------------------------
