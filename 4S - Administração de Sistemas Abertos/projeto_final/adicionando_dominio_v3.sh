@@ -54,6 +54,12 @@ echo -e '$TTL 30\n'\
 
 ### CRIACAO DAS CONFIGURACOES DE ZONA --------------------------
 
+if ! test -f /var/projeto-asa/dns/named.conf.projeto; then
+touch $CAMINHO_NAMED
+chgrp apache $CAMINHO_NAMED
+chown apache $CAMINHO_NAMED
+fi
+
 echo -e "zone \"$DOMINIO\" IN {\n"\
 '       type master;\n'\
 "       file \"/var/projeto-asa/dns/arquivos_de_zona/$ARQUIVO_DOMINIO\";\n"\
