@@ -3,23 +3,23 @@
 
 ### VERIFICANDO DOMINIOS NO BANCO DE DADOS
 
-SENHA=""
+SENHA="1F(986934)"
 
 MYSQL="mysql -h 192.168.102.100 -u container20 -p"$SENHA" -D BD20 -e"
 LISTA_DOMINIOS="$($MYSQL 'SELECT domain FROM domains;')"
 
-
 for DOMINIO in $LISTA_DOMINIOS; do
 if [[ $DOMINIO != domain && $DOMINIO != f.mail20.local && $DOMINIO != mail20.local ]]; then
 if [[ ! -e "/var/projeto-asa/dns/arquivos_de_zona/$DOMINIO.zone" ]]; then
-
 
 ### ADICIONANDO UM PONTO (.) CASO NÃO TENHA
 if [[ ! $DOMINIO =~ \.$ ]]; then
     DOMINIO="$DOMINIO."
 fi
 
+
 IP='192.168.102.120'
+
 ARQUIVO_DOMINIO="$DOMINIO"zone
 CAMINHO_NAMED='/var/projeto-asa/dns/named.conf.projeto'
 CAMINHO_ARQUIVOS="/var/projeto-asa/dns/arquivos_de_zona/$ARQUIVO_DOMINIO"
@@ -32,6 +32,7 @@ WWW="www.$DOMINIO"
 MAIL="mail.$DOMINIO"
 FTP="ftp.$DOMINIO"
 
+
 echo -e '$TTL 30\n'\
 "\$ORIGIN $DOMINIO\n"\
 "@      IN      SOA     $DOMINIO                admin   (\n"\
@@ -39,7 +40,7 @@ echo -e '$TTL 30\n'\
 '               2M\n'\
 '               1M\n'\
 '               5M\n'\
-'               30      )\n'\
+"               30      )\n"\
 '\n'\
 "               IN      A       $IP\n"\
 "               IN      NS      $DOMINIO\n"\
@@ -60,9 +61,8 @@ echo -e "zone \"$DOMINIO\" IN {\n"\
 '};\n' >> $CAMINHO_NAMED
 
 
+
 fi
 fi
 done
 
-### REINICIANDO BIND
-service named restart
