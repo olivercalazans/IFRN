@@ -6,27 +6,39 @@ class Server:
         self._server_socket.bind(('localhost', 50000))
         self._server_socket.listen(4)
         print(f'\nSERVIDOR ATIVO: {self._server_socket.getsockname()}')
-        self._connection     = None
-        self._client_address = None
+        self._clients_list   = dict()
+        self._lock           = threading.Lock()
 
     def receiving_client(self):
         while True:
-            self._connection, self._client_address = self._server_socket.accept()
-            print(f'New log in: {self._client_address}')
-            threading.Thread(target=self.handle_client).start()
+            connection, client_address = self._server_socket.accept()
+            print(f'New log in: {client_address}')
+            threading.Thread(target=self.handle_client, args=(connection, client_address,)).start()
 
-    def handle_client(self):
-        while True:  
-                message = self._connection.recv(1024).decode()
+    def add_client_to_the_list(self, connection, client_address):
+        with self._lock:
+            self._clients_list[client_address] = connection
+
+    def remove_client_from_the_list(self, connection, client_address):
+        with self._lock:
+            connection.close()
+            del self._clients_list[client_address]
+
+    def handle_client(self, connection, client_address):
+        self.add_client_to_the_list(connection, client_address)
+        while True:
+            try:
+                message = connection.recv(1024).decode()
                 if message:
                     if message  == 'EXIT': 
-                        self.logging_out()
+                        self.remove_client_from_the_list(connection, client_address)
                         break
-                    print(f'{self._client_address}> {message}')
-                #else: break
+                    print(f'{client_address[1]}> {message}')
+                else: break
+            except Exception as error:
+                print(error)
+                self.remove_client_from_the_list(connection, client_address)
 
-    def logging_out(self):
-        self._connection.close()
 
 if __name__ == '__main__':
     server = Server()
