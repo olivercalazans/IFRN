@@ -14,5 +14,3 @@ Below is a brief description of what each code does. Inside the code/folder, the
 - **eleicoes.py** - This code makes a request to TSE for election data from the chosen year and creates a list with the candidate data. It's possible to save a file with this data.
 
 - **socket_imagem.py** - This code downloads an image or PDF from the provided URL and saves the header data into a file.  
-
-- **servidor_multifunc.py** - A server that has various functions such as chat, file download/upload, etc.
